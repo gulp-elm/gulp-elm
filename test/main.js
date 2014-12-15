@@ -39,6 +39,16 @@ describe('gulp-elm', function(){
     myElm.once('data', checkTest1(done));
   });
 
+  it('should stop Elm to js failed.', function(done){
+    var myElm = elm();
+    myElm.write(new gutil.File({path: "test/fail.elm", contents: new Buffer('dummy')}));
+    myElm.once('error', function(error){
+      assert(error);
+      assert.equal(error.plugin, 'gulp-elm');
+      done();
+    });
+  });
+
   it('should compile Elm to html from real file.', function(done){
     var myElm = elm({filetype: 'html'});
     myElm.write(new gutil.File({path: "test/test.elm", contents: new Buffer('dummy')}));
