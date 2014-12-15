@@ -84,43 +84,93 @@ function make(options){
     }
 
     // buffer
-    which(opts.exe, function(err){
-      if(!!err) {
-        var msg = 'Failed to find ' + gutil.colors.magenta(opts.exe) + ' in your path.'
-        throw new gutil.PluginError(PLUGIN, msg);
-      }
+    Q.when({phase: 'start'})
 
+    // which
+    .then(function(state){
+      state.phase = 'which';
+      var deferred = Q.defer();
+      which(opts.exe, function(err, exe){
+        if(!!err){
+          var msg = 'Failed to find ' + gutil.colors.magenta(opts.exe) + ' in your path.';
+          deferred.fail(new gutil.PluginError(PLUGIN, msg));
+        }
+        state.exe = exe;
+        deferred.resolve(state);
+      });
+      return deferred.promise;
+    })
+
+    // make temp dir
+    .then(function(state){
+      state.phase = 'make temp dir';
+      var deferred = Q.defer();
       temp.mkdir({prefix: 'gulp-elm-tmp-'}, function(err, dirPath){
-        if(err){_this.emit('error', new gutil.PluginError(PLUGIN, 'cannot make temporary directory.'));}
+        if(err){deferred.fail(new gutil.PluginError(PLUGIN, 'cannot make temporary directory.'));}
+        state.tmpDir = dirPath;
+        deferred.resolve(state);
+      });
+      return deferred.promise;
+    })
 
-        var tmpOut = temp.path({dir: dirPath, suffix: opts.ext})
-          , input  = file.path;
-        fs.exists(input, function(e){
-          if(!e) {
-            input = temp.path({dir: dirPath, suffix: file.relative});
-            fs.writeFileSync(input, file.contents);
-          }
+    // check input exists
+    .then(function(state){
+      state.phase = 'check input';
+      var deferred = Q.defer();
+      state.tmpOut = temp.path({dir: state.dirPath, suffix: opts.ext});
+      state.input  = file.path;
 
-          var args    = opts.args.concat(input, '--output', tmpOut)
-            , output  = path.resolve(process.cwd(), path.basename(file.path, path.extname(file.path)) + opts.ext);
+      fs.exists(state.input, function(exists){
+        if(!exists) {
+          state.input = temp.path({dir: state.dirPath, suffix: file.relative});
+          fs.writeFile(state.input, file.contents, function(){
+            deferred.resolve(state);
+          });
+        }
+        deferred.resolve(state);
+      });
+      return deferred.promise;
+    })
 
-          try {
-            compile(opts.exe, args, function(){
-              fs.readFile(tmpOut, function(err, contents){
-                if(!!err) {_this.emit('error', new gutil.PluginError(PLUGIN, err));}
-                _this.push(new gutil.File({
-                  path: output,
-                  contents: contents
-                }));
-                return callback();
-              }); // end of readFile
-            }); // end of compile
-          } catch (e) {_this.emit('error', e); }
+    // compile
+    .then(function(state){
+      state.phase = 'compile';
+      var deferred = Q.defer()
+        , args = opts.args.concat(state.input, '--output', state.tmpOut);
+      state.output = path.resolve(process.cwd(), path.basename(file.path, path.extname(file.path)) + opts.ext);
+      try {
+        compile(state.exe, args, function(){
+          deferred.resolve(state);
+        });
+      } catch (e) {
+        deferred.fail(e);
+      }
+      return deferred.promise;
+    })
 
-        }); // end of exists
+    // push result
+    .then(function(state){
+      state.phase = 'push';
+      var deferred = Q.defer();
+      fs.readFile(state.tmpOut, function(err, contents){
+        if(!!err) {deferred.fail(new gutil.PluginError(PLUGIN, err)); }
+        _this.push(new gutil.File({
+          path: state.output,
+          contents: contents
+        }));
+        deferred.resolve(state);
+      });
+      return deferred.promise;
+    })
 
-      }); // end of buffer
-    }); // end of which
+    .fail(function(err){
+      _this.emit('error', err);
+    })
+
+    .done(function(){
+      callback();
+    });
+
   } // end of transform
 
   return through.obj(transform);
