@@ -3,14 +3,13 @@
   "version": "0.1.0",
   "description": "elm compiler for Gulp",
   "license": "MIT",
-  "repository": "philopon/gulp-elm",
-  "author": {
-    "name": "philopon",
-    "email": "philopon.dependence@gmail.com"
-  },
   "repository": {
     "type": "git",
     "url": ""
+  },
+  "author": {
+    "name": "philopon",
+    "email": "philopon.dependence@gmail.com"
   },
   "readmeFilename": "README.md",
   "main": "index.js",
@@ -18,11 +17,19 @@
     "gulpplugin",
     "elm"
   ],
+  "scripts": {
+    "test": "mocha ./test/main.js"
+  },
   "dependencies": {
     "gulp-util": "^3.0.1",
     "q": "^1.1.2",
     "temp": "^0.8.1",
     "through2": "^0.6.3",
     "which": "^1.0.8"
+  },
+  "devDependencies": {
+    "jsdom": "^1.5.0",
+    "mocha": "^2.0.1",
+    "requirejs": "^2.1.15"
   }
 }

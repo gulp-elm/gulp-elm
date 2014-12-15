@@ -8,7 +8,7 @@ Example
 var gulp = require('gulp');
 var elm  = require('gulp-elm');
 
-gulp.task('elm-init', elm.init)
+gulp.task('elm-init', elm.init);
 
 gulp.task('elm', ['elm-init'], function(){
   return gulp.src('src/*.elm')
@@ -22,7 +22,9 @@ API
 
 ### `elm.init`
 
-execute `elm-make --yes`
+execute `elm-make --yes`.
+
+If you compile multi file, all elm tasks depends on elm.init task.
 
 ### `elm` / `elm.make`
 
@@ -34,11 +36,11 @@ compile elm files.
 
     add --yes option to elm-make.
 
-* elmMake (default: elm-make)
+* elmMake (default: "elm-make")
 
     elm-make executable file.
 
-* filetype (default: js)
+* filetype (default: "js")
 
     elm output file type.
 
