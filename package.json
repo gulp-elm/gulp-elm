@@ -2,12 +2,22 @@
   "name": "gulp-elm",
   "version": "0.1.0",
   "description": "elm compiler for Gulp",
+  "license": "MIT",
+  "repository": "philopon/gulp-elm",
+  "author": {
+    "name": "philopon",
+    "email": "philopon.dependence@gmail.com"
+  },
   "repository": {
     "type": "git",
     "url": ""
   },
   "readmeFilename": "README.md",
   "main": "index.js",
+  "keywords": [
+    "gulpplugin",
+    "elm"
+  ],
   "dependencies": {
     "gulp-util": "^3.0.1",
     "q": "^1.1.2",
