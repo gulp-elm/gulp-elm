@@ -89,9 +89,13 @@ function make(options){
       var deferred = Q.defer();
       which(opts.exe, function(err, exe){
         if(!!err){
-          deferred.reject({state: state, message: 'Failed to find ' + gutil.colors.magenta(opts.exe) + ' in your path.'});
+          console.log(gutil.colors.yellow('WARN: ') + 'Failed to find ' + gutil.colors.magenta("elm-make") + ' in your path. Trying to use local ' + opts.exe)
+          state.exe = opts.exe;
+//      deferred.reject({state: state, message: 'Failed to find ' + gutil.colors.magenta(opts.exe) + ' in your path.'});
         }
-        state.exe = exe;
+    		else{
+    			state.exe = exe;
+    		}
         deferred.resolve(state);
       });
       return deferred.promise;
