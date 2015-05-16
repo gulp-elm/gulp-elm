@@ -1,5 +1,6 @@
 module Test1 where
 
-import Text(asText)
+import Graphics.Element exposing (Element, show)
 
-main = asText "Hello, World!"
+main : Element
+main = show "Hello, World!"

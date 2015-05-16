@@ -1,5 +1,6 @@
-module Test2 where
+module Test1 where
 
-import Text(asText)
+import Graphics.Element exposing (Element, show)
 
-main = asText 1
+main : Element
+main = show 2
