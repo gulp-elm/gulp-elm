@@ -1,6 +1,7 @@
-module Test1 where
+module Test2 where
 
-import Graphics.Element exposing (Element, show)
+import Foo
+import Graphics.Element exposing (Element)
 
 main : Element
-main = show 2
+main = Foo.foo
