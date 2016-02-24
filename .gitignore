@@ -1,3 +1,6 @@
 node_modules
 dest
 elm-stuff
+npm-debug.log
+typings
+.vscode

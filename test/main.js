@@ -21,21 +21,21 @@ function checkTest1(done){
 }
 
 describe('gulp-elm', function(){
-
+  
   before(function(done){
     this.timeout(30000);
     elm.init().then(done);
   });
-
+  
   it('should compile Elm to js from virtual file.', function(done){
     var myElm = elm();
-    myElm.write(new gutil.File({path: "dummy", contents: fs.readFileSync('test/test.elm')}));
+    myElm.write(new gutil.File({path: "dummy", contents: fs.readFileSync('test/test1.elm')}));
     myElm.once('data', checkTest1(done));
   });
 
   it('should compile Elm to js from real file.', function(done){
     var myElm = elm();
-    myElm.write(new gutil.File({path: "test/test.elm", contents: new Buffer('dummy')}));
+    myElm.write(new gutil.File({path: "test/test1.elm", contents: new Buffer('dummy')}));
     myElm.once('data', checkTest1(done));
   });
 
@@ -51,7 +51,7 @@ describe('gulp-elm', function(){
 
   it('should compile Elm to html from real file.', function(done){
     var myElm = elm({filetype: 'html'});
-    myElm.write(new gutil.File({path: "test/test.elm", contents: new Buffer('dummy')}));
+    myElm.write(new gutil.File({path: "test/test1.elm", contents: new Buffer('dummy')}));
     myElm.once('data', function(file){
       assert(file.isBuffer());
 
@@ -65,4 +65,16 @@ describe('gulp-elm', function(){
       });
     });
   });
+
+  it('should bundle Elm files to js from virtual file.', function(done){
+    var output = "bundle.js";
+    var myElm = elm.bundle({output: output});
+    myElm.write(new gutil.File({path: "test/test1.elm", contents: fs.readFileSync('test/test1.elm')}));
+    myElm.end(new gutil.File({path: "test/test2.elm", contents: fs.readFileSync('test/test2.elm')}));
+    myElm.once('data', function(file){
+      assert(file.isBuffer());
+      assert.equal(file.relative, output);
+    });
+  });
+
 });

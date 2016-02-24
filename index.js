@@ -2,6 +2,7 @@
 
 var gutil         = require('gulp-util')
   , through       = require('through2')
+  , reduce        = require('through2-reduce')
   , which         = require('which')
   , fs            = require('fs')
   , path          = require('path')
@@ -14,13 +15,18 @@ var gutil         = require('gulp-util')
 
 function processMakeOptions(options) {
   var args   = defaultArgs
-    , ext    = '.js'
-    , exe    = elm_make;
+  , ext    = '.js'
+  , exe    = elm_make
+  , output = null;
 
   if(!!options){
     var yes = options.yesToAllPrompts;
     if(yes !== undefined && !yes) {
       args = [];
+    }
+    
+    if(options.output) {
+      output = options.output;
     }
 
     if(options.elmMake) { exe = options.elmMake; }
@@ -33,12 +39,12 @@ function processMakeOptions(options) {
     }
   }
 
-  return {args: args, ext: ext, exe: exe};
+  return {args: args, ext: ext, exe: exe, output: output};
 }
 
 function compile(exe, args, callback){
   var proc    = child_process.spawn(exe, args)
-    , bStderr = new Buffer(0);
+  , bStderr = new Buffer(0);
 
   proc.stderr.on('data', function(stderr){
     bStderr = Buffer.concat([bStderr, new Buffer(stderr)]);
@@ -134,8 +140,113 @@ function make(options){
     .then(function(state){
       state.phase = 'compile';
       var deferred = Q.defer()
-        , args = opts.args.concat(state.input, '--output', state.tmpOut);
+      , args = opts.args.concat(state.input, '--output', state.tmpOut);
       state.output = path.resolve(process.cwd(), path.basename(file.path, path.extname(file.path)) + opts.ext);
+      compile(state.exe, args, function(err){
+        if(!!err) { deferred.reject({state: state, message: err}); }
+        else      { deferred.resolve(state); }
+      });
+      return deferred.promise;
+    })
+
+    // push result
+    .then(function(state){
+      state.phase = 'push';
+      var deferred = Q.defer();
+      fs.readFile(state.tmpOut, function(err, contents){
+        if(!!err) {deferred.reject({state: state, message: err}); }
+        _this.push(new gutil.File({
+          path: state.output,
+          contents: contents
+        }));
+        deferred.resolve(state);
+      });
+      return deferred.promise;
+    })
+
+    .fail(function(rej){
+      _this.emit('error', new gutil.PluginError(PLUGIN, rej.message));
+      return rej.state;
+    })
+
+    .done(function(state){
+
+      function next() {
+        fs.unlink(state.tmpOut, function(){
+          fs.rmdir(state.tmpDir, function(){
+          callback();
+          });
+        });
+      }
+
+      if(state.tmpInput) {
+        fs.unlink(state.input, function(){
+          next();
+        });
+      } else {
+        next();
+      }
+
+    });
+
+  } // end of transform
+
+  if (opts.args.findIndex(value => value.startsWith('--output ')) > 0) {
+    return bundle(options); 
+  }
+  
+  return through.obj(transform);
+}
+
+function bundle(options) {
+  var opts = processMakeOptions(options);
+  var files = [];
+  
+  function transform(file, encoding, callback) {
+    files.push(file.path);
+    callback();
+  }
+  
+  function endStream(callback) {
+    var _this = this;
+
+    // buffer
+    Q.when({phase: 'start'})
+
+    // which
+    .then(function(state){
+      state.phase = 'which';
+      var deferred = Q.defer();
+      which(opts.exe, function(err, exe){
+        if(!!err){
+          deferred.reject({state: state, message: 'Failed to find ' + gutil.colors.magenta(opts.exe) + ' in your path.'});
+        }
+        state.exe = exe;
+        deferred.resolve(state);
+      });
+      return deferred.promise;
+    })
+
+    // make temp dir
+    .then(function(state){
+      state.phase = 'make temp dir';
+      var deferred = Q.defer();
+      temp.mkdir({prefix: 'gulp-elm-tmp-'}, function(err, dirPath){
+        if(err){deferred.reject({state: state, message: 'cannot make temporary directory.'}); }
+        state.tmpDir = dirPath;
+        deferred.resolve(state);
+      });
+      state.tmpOut = temp.path({dir: state.dirPath, suffix: opts.ext});
+      return deferred.promise;
+    })
+
+    // compile
+    .then(function(state){
+      state.phase = 'compile';
+      state.output = path.resolve(process.cwd(), opts.output);
+
+      var deferred = Q.defer()
+      , args = opts.args.concat(files, '--output', state.tmpOut);
       compile(state.exe, args, function(err){
         if(!!err) { deferred.reject({state: state, message: err}); }
         else      { deferred.resolve(state); }
@@ -182,12 +293,12 @@ function make(options){
       }
 
     });
-
-  } // end of transform
-
-  return through.obj(transform);
+  }
+  
+  return through.obj(transform, endStream);
 }
 
 module.exports      = make;
 module.exports.make = make;
+module.exports.bundle = bundle;
 module.exports.init = init;
