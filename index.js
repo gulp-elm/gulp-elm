@@ -2,7 +2,6 @@
 
 var gutil         = require('gulp-util')
   , through       = require('through2')
-  , reduce        = require('through2-reduce')
   , which         = require('which')
   , fs            = require('fs')
   , path          = require('path')
