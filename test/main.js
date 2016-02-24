@@ -74,6 +74,7 @@ describe('gulp-elm', function(){
     myElm.once('data', function(file){
       assert(file.isBuffer());
       assert.equal(file.relative, output);
+      done();
     });
   });
 
