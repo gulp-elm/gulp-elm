@@ -16,7 +16,7 @@ function processMakeOptions(options) {
   var args   = defaultArgs
   , ext    = '.js'
   , exe    = elm_make
-  , output = null;
+  , output = 'bundle.js';
 
   if(!!options){
     var yes = options.yesToAllPrompts;
@@ -220,10 +220,6 @@ function make(options){
 
   } // end of transform
 
-  if (opts.args.findIndex(value => value.startsWith('--output ')) > 0) {
-    return bundle(options); 
-  }
-  
   return through.obj(transform);
 }
 
