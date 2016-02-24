@@ -45,3 +45,15 @@ compile elm files.
     elm output file type.
 
     js(javascript) or html.
+
+### `bundle`
+
+compile and bundle elm files into a single file.
+
+#### options
+
+* output (default: "bundle.js")
+
+    set the output file name for the --output option to elm-make.
+
+and all available options from `elm` / `elm.make`
