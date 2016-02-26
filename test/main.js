@@ -78,4 +78,17 @@ describe('gulp-elm', function(){
     });
   });
 
+  it('should error when output does not match filetype.', function(){
+    var output = "bundle.js";
+    try {
+      var myElm = elm.bundle(output, {filetype: 'html'});
+    } catch (error) {
+      assert(error);
+      assert.equal(error.plugin, 'gulp-elm');
+      return;
+    }
+
+    assert.fail('Should have thrown exception');
+  });
+
 });

@@ -12,7 +12,7 @@ var gutil         = require('gulp-util')
   , defaultArgs   = ['--yes']
   , PLUGIN        = 'gulp-elm';
 
-function processMakeOptions(options) {
+function processMakeOptions(options, output) {
   var args   = defaultArgs
   , ext    = '.js'
   , exe    = elm_make;
@@ -30,6 +30,8 @@ function processMakeOptions(options) {
       if(ft === 'js' || ft === 'javascript') { ext = '.js'; }
       else if (ft == 'html') { ext = '.html'; }
       else { throw new gutil.PluginError(PLUGIN, 'filetype is js or html.'); }
+
+      if (output && path.extname(output) !== ext) { throw new gutil.PluginError(PLUGIN, 'output is ' + path.extname(output) + ', but filetype is ' + ext); }
     }
   }
 
