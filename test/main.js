@@ -68,7 +68,7 @@ describe('gulp-elm', function(){
 
   it('should bundle Elm files to js from virtual file.', function(done){
     var output = "bundle.js";
-    var myElm = elm.bundle({output: output});
+    var myElm = elm.bundle(output);
     myElm.write(new gutil.File({path: "test/test1.elm", contents: fs.readFileSync('test/test1.elm')}));
     myElm.end(new gutil.File({path: "test/test2.elm", contents: fs.readFileSync('test/test2.elm')}));
     myElm.once('data', function(file){
@@ -76,6 +76,19 @@ describe('gulp-elm', function(){
       assert.equal(file.relative, output);
       done();
     });
+  });
+
+  it('should error when output does not match filetype.', function(){
+    var output = "bundle.js";
+    try {
+      var myElm = elm.bundle(output, {filetype: 'html'});
+    } catch (error) {
+      assert(error);
+      assert.equal(error.plugin, 'gulp-elm');
+      return;
+    }
+
+    assert.fail('Should have thrown exception');
   });
 
 });

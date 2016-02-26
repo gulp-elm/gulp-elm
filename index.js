@@ -12,20 +12,15 @@ var gutil         = require('gulp-util')
   , defaultArgs   = ['--yes']
   , PLUGIN        = 'gulp-elm';
 
-function processMakeOptions(options) {
+function processMakeOptions(options, output) {
   var args   = defaultArgs
   , ext    = '.js'
-  , exe    = elm_make
-  , output = 'bundle.js';
+  , exe    = elm_make;
 
   if(!!options){
     var yes = options.yesToAllPrompts;
     if(yes !== undefined && !yes) {
       args = [];
-    }
-    
-    if(options.output) {
-      output = options.output;
     }
 
     if(options.elmMake) { exe = options.elmMake; }
@@ -35,10 +30,12 @@ function processMakeOptions(options) {
       if(ft === 'js' || ft === 'javascript') { ext = '.js'; }
       else if (ft == 'html') { ext = '.html'; }
       else { throw new gutil.PluginError(PLUGIN, 'filetype is js or html.'); }
+
+      if (output && path.extname(output) !== ext) { throw new gutil.PluginError(PLUGIN, 'output is ' + path.extname(output) + ', but filetype is ' + ext); }
     }
   }
 
-  return {args: args, ext: ext, exe: exe, output: output};
+  return {args: args, ext: ext, exe: exe};
 }
 
 function compile(exe, args, callback){
@@ -131,11 +128,11 @@ function compileHandler(opts, file) {
     return deferred.promise;
   }.bind(this);
 }
-    
-function bundleHandler(opts, files) {
+
+function bundleHandler(output, opts, files) {
   return function(state){
     state.phase = 'compile';
-    state.output = path.resolve(process.cwd(), opts.output);
+    state.output = path.resolve(process.cwd(), output);
 
     var deferred = Q.defer()
     , args = opts.args.concat(files, '--output', state.tmpOut);
@@ -223,8 +220,9 @@ function make(options){
   return through.obj(transform);
 }
 
-function bundle(options) {
-  var opts = processMakeOptions(options);
+function bundle(output, options) {
+  if (!output) { throw new gutil.PluginError(PLUGIN, 'output filename is required when bundling.') }
+  var opts = processMakeOptions(options, output);
   var files = [];
   
   function transform(file, encoding, callback) {
@@ -238,7 +236,7 @@ function bundle(options) {
     Q.when({phase: 'start'})
     .then(whichHandler.apply(this, [opts]))
     .then(tempHandler.apply(this, [opts]))
-    .then(bundleHandler.apply(this, [opts, files]))
+    .then(bundleHandler.apply(this, [output, opts, files]))
     .then(pushResultHandler.apply(this))
     .fail(failHandler.apply(this))
     .done(doneHandler.apply(this, [callback]));
