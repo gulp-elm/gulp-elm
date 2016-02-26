@@ -26,7 +26,7 @@ gulp.task('elm-bundle', ['elm-init'], function(){
 API
 ---
 
-### `elm.init`
+### `elm.init(options)`
 
 execute `elm-make --yes`.
 
@@ -38,7 +38,7 @@ If you compile multi file, all elm tasks depends on elm.init task.
 
     elm-make executable file.
 
-### `elm` / `elm.make`
+### `elm(options)` / `elm.make(options)`
 
 compile elm files.
 
@@ -58,15 +58,13 @@ compile elm files.
 
     js(javascript) or html.
 
-### `elm.bundle`
+### `elm.bundle(output, options)`
 
 compile and bundle elm files into a single file.
 
-#### arguments
+#### output
 
-* output
-
-    you must pass the name of the output file
+  you must pass the name of the output file
 
 #### options
 
