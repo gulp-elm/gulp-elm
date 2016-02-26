@@ -25,6 +25,8 @@ function processMakeOptions(options) {
 
     if(options.elmMake) { exe = options.elmMake; }
 
+    if(options.warnings === true) { args.push('--warn'); }
+
     var ft = options.filetype;
     if(!!ft) {
       if(ft === 'js' || ft === 'javascript') { ext = '.js'; }
@@ -46,7 +48,7 @@ function compile(exe, args, callback){
 
   proc.on('close', function(code){
     if(!!code) { callback(bStderr.toString()); }
-    callback(null);
+    callback(null, bStderr.toString());
   });
 }
 
@@ -136,18 +138,20 @@ function make(options){
       var deferred = Q.defer()
         , args = opts.args.concat(state.input, '--output', state.tmpOut);
       state.output = path.resolve(process.cwd(), path.basename(file.path, path.extname(file.path)) + opts.ext);
-      compile(state.exe, args, function(err){
+      compile(state.exe, args, function(err, warnings){
         if(!!err) { deferred.reject({state: state, message: err}); }
-        else      { deferred.resolve(state); }
+        else      { deferred.resolve({state: state, warnings: warnings}); }
       });
       return deferred.promise;
     })
 
     // push result
-    .then(function(state){
+    .then(function(result){
+      var state = result.state;
       state.phase = 'push';
+      if(result.warnings) { gutil.log(result.warnings); }
       var deferred = Q.defer();
-      fs.readFile(state.tmpOut, function(err, contents){
+      fs.readFile(result.state.tmpOut, function(err, contents){
         if(!!err) {deferred.reject({state: state, message: err}); }
         _this.push(new gutil.File({
           path: state.output,

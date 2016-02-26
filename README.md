@@ -45,3 +45,7 @@ compile elm files.
     elm output file type.
 
     js(javascript) or html.
+
+* warnings (default: false)
+
+    add --warn option to elm-make
