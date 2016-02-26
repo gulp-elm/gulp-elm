@@ -30,13 +30,13 @@ API
 
 execute `elm-make --yes`.
 
-If you compile multi file, all elm tasks depends on elm.init task.
+If you compile multi file, all elm tasks depends on `elm.init` task.
 
 #### options
 
-* elmMake (default: "elm-make")
+* `elmMake` (default: `"elm-make"`)
 
-    elm-make executable file.
+    `elm-make` executable file.
 
 ### `elm(options)` / `elm.make(options)`
 
@@ -44,19 +44,19 @@ compile elm files.
 
 #### options
 
-* yesToAllPrompts (default: true)
+* `yesToAllPrompts` (default: `true`)
 
-    add --yes option to elm-make.
+    add `--yes` option to `elm-make`.
 
-* elmMake (default: "elm-make")
+* `elmMake` (default: `"elm-make"`)
 
-    elm-make executable file.
+    `elm-make` executable file.
 
-* filetype (default: "js")
+* `filetype` (default: `"js"`)
 
     elm output file type.
 
-    js(javascript) or html.
+    `"js"` (or `"javascript"`) or `"html"`.
 
 ### `elm.bundle(output, options)`
 
@@ -68,10 +68,10 @@ compile and bundle elm files into a single file.
 
 #### options
 
-* yesToAllPrompts (default: true)
+* `yesToAllPrompts` (default: `true`)
 
-    add --yes option to elm-make.
+    add `--yes` option to `elm-make`.
 
-* elmMake (default: "elm-make")
+* `elmMake` (default: `"elm-make"`)
 
-    elm-make executable file.
+    `elm-make` executable file.
