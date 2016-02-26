@@ -68,7 +68,7 @@ describe('gulp-elm', function(){
 
   it('should bundle Elm files to js from virtual file.', function(done){
     var output = "bundle.js";
-    var myElm = elm.bundle({output: output});
+    var myElm = elm.bundle(output);
     myElm.write(new gutil.File({path: "test/test1.elm", contents: fs.readFileSync('test/test1.elm')}));
     myElm.end(new gutil.File({path: "test/test2.elm", contents: fs.readFileSync('test/test2.elm')}));
     myElm.once('data', function(file){
