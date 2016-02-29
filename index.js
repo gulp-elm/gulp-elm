@@ -23,10 +23,6 @@ function processMakeOptions(options, output) {
       args = [];
     }
 
-    if(options.warn) {
-      args = args.concat('--warn');
-    }
-
     if(options.elmMake) { exe = options.elmMake; }
 
     var ft = options.filetype;
@@ -82,7 +78,7 @@ function whichHandler(opts) {
     return deferred.promise;
   }.bind(this);
 }
-
+   
 function tempHandler(opts) {
   return function(state){
     state.phase = 'make temp dir';
@@ -95,7 +91,7 @@ function tempHandler(opts) {
     });
     return deferred.promise;
   }.bind(this);
-}
+}  
 
 function checkInputExistsHandler(opts, file) {
   return function(state){
@@ -118,8 +114,8 @@ function checkInputExistsHandler(opts, file) {
     return deferred.promise;
   }.bind(this)
 }
-
-function compileHandler(opts, file) {
+    
+function compileHandler(opts, file) { 
   return function(state){
     state.phase = 'compile';
     var deferred = Q.defer()
@@ -147,7 +143,7 @@ function bundleHandler(output, opts, files) {
     return deferred.promise;
   }.bind(this);
 }
-
+    
 function pushResultHandler() {
   return function(state){
     state.phase = 'push';
@@ -163,15 +159,15 @@ function pushResultHandler() {
     return deferred.promise;
   }.bind(this);
 }
-
+  
 function failHandler() {
   return function(rej){
     this.emit('error', new gutil.PluginError(PLUGIN, rej.message));
     return rej.state;
   }.bind(this);
 }
-
-function doneHandler(callback) {
+  
+function doneHandler(callback) { 
   return function(state){
 
     function next() {
@@ -228,14 +224,14 @@ function bundle(output, options) {
   if (!output) { throw new gutil.PluginError(PLUGIN, 'output filename is required when bundling.') }
   var opts = processMakeOptions(options, output);
   var files = [];
-
+  
   function transform(file, encoding, callback) {
     files.push(file.path);
     callback();
   }
-
+  
   function endStream(callback) {
-
+    
     // buffer
     Q.when({phase: 'start'})
     .then(whichHandler.apply(this, [opts]))
@@ -245,7 +241,7 @@ function bundle(output, options) {
     .fail(failHandler.apply(this))
     .done(doneHandler.apply(this, [callback]));
   }
-
+  
   return through.obj(transform, endStream);
 }
 
