@@ -25,7 +25,7 @@ function processMakeOptions(options) {
 
     if(options.elmMake) { exe = options.elmMake; }
 
-    if(options.warnings === true) { args.push('--warn'); }
+    if(options.warnings === true) { args = args.concat(['--warn']); }
 
     var ft = options.filetype;
     if(!!ft) {
