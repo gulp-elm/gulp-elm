@@ -1,11 +1,11 @@
 {
   "name": "gulp-elm",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "elm compiler for Gulp",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/philopon/gulp-elm"
   },
   "author": {
     "name": "philopon",
