@@ -14,8 +14,8 @@ var gutil         = require('gulp-util')
 
 function processMakeOptions(options, output) {
   var args   = defaultArgs
-  , ext    = '.js'
-  , exe    = elm_make;
+    , ext    = '.js'
+    , exe    = elm_make;
 
   if(!!options){
     var yes = options.yesToAllPrompts;
@@ -24,6 +24,8 @@ function processMakeOptions(options, output) {
     }
 
     if(options.elmMake) { exe = options.elmMake; }
+
+    if(options.warnings === true) { args = args.concat(['--warn']); }
 
     var ft = options.filetype;
     if(!!ft) {
@@ -40,7 +42,7 @@ function processMakeOptions(options, output) {
 
 function compile(exe, args, callback){
   var proc    = child_process.spawn(exe, args)
-  , bStderr = new Buffer(0);
+    , bStderr = new Buffer(0);
 
   proc.stderr.on('data', function(stderr){
     bStderr = Buffer.concat([bStderr, new Buffer(stderr)]);
@@ -48,7 +50,7 @@ function compile(exe, args, callback){
 
   proc.on('close', function(code){
     if(!!code) { callback(bStderr.toString()); }
-    callback(null);
+    callback(null, bStderr.toString());
   });
 }
 
@@ -66,66 +68,66 @@ function init(options) {
 
 function whichHandler(opts) {
   return function(state){
-    state.phase = 'which';
-    var deferred = Q.defer();
-    which(opts.exe, function(err, exe){
-      if(!!err){
-        deferred.reject({state: state, message: 'Failed to find ' + gutil.colors.magenta(opts.exe) + ' in your path.'});
-      }
-      state.exe = exe;
-      deferred.resolve(state);
-    });
-    return deferred.promise;
+      state.phase = 'which';
+      var deferred = Q.defer();
+      which(opts.exe, function(err, exe){
+        if(!!err){
+          deferred.reject({state: state, message: 'Failed to find ' + gutil.colors.magenta(opts.exe) + ' in your path.'});
+        }
+        state.exe = exe;
+        deferred.resolve(state);
+      });
+      return deferred.promise;
   }.bind(this);
 }
-   
+
 function tempHandler(opts) {
   return function(state){
-    state.phase = 'make temp dir';
-    var deferred = Q.defer();
-    temp.mkdir({prefix: 'gulp-elm-tmp-'}, function(err, dirPath){
-      if(err){deferred.reject({state: state, message: 'cannot make temporary directory.'}); }
-      state.tmpDir = dirPath;
+      state.phase = 'make temp dir';
+      var deferred = Q.defer();
+      temp.mkdir({prefix: 'gulp-elm-tmp-'}, function(err, dirPath){
+        if(err){deferred.reject({state: state, message: 'cannot make temporary directory.'}); }
+        state.tmpDir = dirPath;
       state.tmpOut = temp.path({dir: state.dirPath, suffix: opts.ext});
-      deferred.resolve(state);
-    });
-    return deferred.promise;
+        deferred.resolve(state);
+      });
+      return deferred.promise;
   }.bind(this);
-}  
+}
 
 function checkInputExistsHandler(opts, file) {
   return function(state){
-    state.phase = 'check input';
-    var deferred = Q.defer();
-    state.tmpOut = temp.path({dir: state.dirPath, suffix: opts.ext});
-    state.input  = file.path;
-    state.tmpInput = false;
+      state.phase = 'check input';
+      var deferred = Q.defer();
+      state.tmpOut = temp.path({dir: state.dirPath, suffix: opts.ext});
+      state.input  = file.path;
+      state.tmpInput = false;
 
-    fs.exists(state.input, function(exists){
-      if(!exists) {
-        state.tmpInput = true;
-        state.input = temp.path({dir: state.dirPath, suffix: file.relative});
-        fs.writeFile(state.input, file.contents, function(){
-          deferred.resolve(state);
-        });
-      }
-      deferred.resolve(state);
-    });
-    return deferred.promise;
+      fs.exists(state.input, function(exists){
+        if(!exists) {
+          state.tmpInput = true;
+          state.input = temp.path({dir: state.dirPath, suffix: file.relative});
+          fs.writeFile(state.input, file.contents, function(){
+            deferred.resolve(state);
+          });
+        }
+        deferred.resolve(state);
+      });
+      return deferred.promise;
   }.bind(this)
 }
-    
-function compileHandler(opts, file) { 
+
+function compileHandler(opts, file) {
   return function(state){
-    state.phase = 'compile';
-    var deferred = Q.defer()
-    , args = opts.args.concat(state.input, '--output', state.tmpOut);
-    state.output = path.resolve(process.cwd(), path.basename(file.path, path.extname(file.path)) + opts.ext);
-    compile(state.exe, args, function(err){
-      if(!!err) { deferred.reject({state: state, message: err}); }
-      else      { deferred.resolve(state); }
-    });
-    return deferred.promise;
+      state.phase = 'compile';
+      var deferred = Q.defer()
+        , args = opts.args.concat(state.input, '--output', state.tmpOut);
+      state.output = path.resolve(process.cwd(), path.basename(file.path, path.extname(file.path)) + opts.ext);
+      compile(state.exe, args, function(err, warnings){
+        if(!!err) { deferred.reject({state: state, message: err}); }
+        else      { deferred.resolve({state: state, warnings: warnings}); }
+      });
+      return deferred.promise;
   }.bind(this);
 }
 
@@ -136,55 +138,57 @@ function bundleHandler(output, opts, files) {
 
     var deferred = Q.defer()
     , args = opts.args.concat(files, '--output', state.tmpOut);
-    compile(state.exe, args, function(err){
+    compile(state.exe, args, function(err, warnings){
       if(!!err) { deferred.reject({state: state, message: err}); }
-      else      { deferred.resolve(state); }
+      else      { deferred.resolve({state: state, warnings: warnings}); }
     });
     return deferred.promise;
   }.bind(this);
 }
-    
+
 function pushResultHandler() {
-  return function(state){
-    state.phase = 'push';
-    var deferred = Q.defer();
-    fs.readFile(state.tmpOut, function(err, contents){
-      if(!!err) {deferred.reject({state: state, message: err}); }
+  return function(result){
+      var state = result.state;
+      state.phase = 'push';
+      if(result.warnings) { gutil.log(result.warnings); }
+      var deferred = Q.defer();
+      fs.readFile(result.state.tmpOut, function(err, contents){
+        if(!!err) {deferred.reject({state: state, message: err}); }
       this.push(new gutil.File({
-        path: state.output,
-        contents: contents
-      }));
-      deferred.resolve(state);
+          path: state.output,
+          contents: contents
+        }));
+        deferred.resolve(state);
     }.bind(this));
-    return deferred.promise;
+      return deferred.promise;
   }.bind(this);
 }
-  
+
 function failHandler() {
   return function(rej){
     this.emit('error', new gutil.PluginError(PLUGIN, rej.message));
-    return rej.state;
+      return rej.state;
   }.bind(this);
 }
-  
-function doneHandler(callback) { 
+
+function doneHandler(callback) {
   return function(state){
 
-    function next() {
-      fs.unlink(state.tmpOut, function(){
-        fs.rmdir(state.tmpDir, function(){
-        callback();
+      function next() {
+        fs.unlink(state.tmpOut, function(){
+          fs.rmdir(state.tmpDir, function(){
+            callback();
+          });
         });
-      });
-    }
+      }
 
-    if(state.tmpInput) {
-      fs.unlink(state.input, function(){
+      if(state.tmpInput) {
+        fs.unlink(state.input, function(){
+          next();
+        });
+      } else {
         next();
-      });
-    } else {
-      next();
-    }
+      }
   }.bind(this);
 }
 
@@ -224,14 +228,14 @@ function bundle(output, options) {
   if (!output) { throw new gutil.PluginError(PLUGIN, 'output filename is required when bundling.') }
   var opts = processMakeOptions(options, output);
   var files = [];
-  
+
   function transform(file, encoding, callback) {
     files.push(file.path);
     callback();
   }
-  
+
   function endStream(callback) {
-    
+
     // buffer
     Q.when({phase: 'start'})
     .then(whichHandler.apply(this, [opts]))
@@ -241,7 +245,7 @@ function bundle(output, options) {
     .fail(failHandler.apply(this))
     .done(doneHandler.apply(this, [callback]));
   }
-  
+
   return through.obj(transform, endStream);
 }
 

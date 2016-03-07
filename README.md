@@ -58,6 +58,11 @@ compile elm files.
 
     `"js"` (or `"javascript"`) or `"html"`.
 
+* `warnings` (default: `false`)
+
+    add `--warn` option to `elm-make`
+
+
 ### `elm.bundle(output, options)`
 
 compile and bundle elm files into a single file.
@@ -75,3 +80,7 @@ compile and bundle elm files into a single file.
 * `elmMake` (default: `"elm-make"`)
 
     `elm-make` executable file.
+
+* `warnings` (default: `false`)
+
+    add `--warn` option to `elm-make`
