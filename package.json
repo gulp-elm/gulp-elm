@@ -25,7 +25,8 @@
     "q": "^1.1.2",
     "temp": "^0.8.1",
     "through2": "^0.6.3",
-    "which": "^1.0.8"
+    "which": "^1.0.8",
+    "cross-spawn-async": "^2.1.9"
   },
   "devDependencies": {
     "jsdom": "^1.5.0",

@@ -6,7 +6,7 @@ var gutil         = require('gulp-util')
   , fs            = require('fs')
   , path          = require('path')
   , temp          = require('temp')
-  , child_process = require('child_process')
+  , spawn         = require('cross-spawn-async')
   , Q             = require('q')
   , elm_make      = 'elm-make'
   , defaultArgs   = ['--yes']
@@ -41,7 +41,7 @@ function processMakeOptions(options, output) {
 }
 
 function compile(exe, args, callback){
-  var proc    = child_process.spawn(exe, args)
+  var proc    = spawn(exe, args)
     , bStderr = new Buffer(0);
 
   proc.stderr.on('data', function(stderr){
