@@ -41,12 +41,7 @@ function processMakeOptions(options, output) {
 }
 
 function compile(exe, args, callback){
-  var proc    = spawn(exe, args, {stdio: ['ignore', 'ignore', 2]})
-    // , bStderr = new Buffer(0);
-
-  // proc.stderr.on('data', function(stderr){
-    // bStderr = Buffer.concat([bStderr, new Buffer(stderr)]);
-  // });
+  var proc    = spawn(exe, args, {stdio: ['ignore', 'ignore', process.stderr]})
 
   proc.on('close', function(code){
     if(!!code) { callback("Compile error"); }
