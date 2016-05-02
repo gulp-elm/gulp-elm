@@ -1,6 +1,6 @@
 {
   "name": "gulp-elm",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "elm compiler for Gulp",
   "license": "MIT",
   "repository": {
@@ -26,7 +26,7 @@
     "temp": "^0.8.1",
     "through2": "^0.6.3",
     "which": "^1.0.8",
-    "cross-spawn-async": "^2.1.9"
+    "cross-spawn-async": "^2.2.2"
   },
   "devDependencies": {
     "jsdom": "^1.5.0",

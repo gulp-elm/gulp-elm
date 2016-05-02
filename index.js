@@ -41,16 +41,11 @@ function processMakeOptions(options, output) {
 }
 
 function compile(exe, args, callback){
-  var proc    = spawn(exe, args)
-    , bStderr = new Buffer(0);
-
-  proc.stderr.on('data', function(stderr){
-    bStderr = Buffer.concat([bStderr, new Buffer(stderr)]);
-  });
+  var proc    = spawn(exe, args, {stdio: ['ignore', process.stdout, process.stderr]})
 
   proc.on('close', function(code){
-    if(!!code) { callback(bStderr.toString()); }
-    callback(null, bStderr.toString());
+    if(!!code) { callback("Compile error"); }
+    callback(null, "");
   });
 }
 
@@ -166,6 +161,7 @@ function pushResultHandler() {
 
 function failHandler() {
   return function(rej){
+    console.log(rej.message);
     this.emit('error', new gutil.PluginError(PLUGIN, rej.message));
       return rej.state;
   }.bind(this);
