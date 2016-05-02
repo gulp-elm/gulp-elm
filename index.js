@@ -41,7 +41,7 @@ function processMakeOptions(options, output) {
 }
 
 function compile(exe, args, callback){
-  var proc    = spawn(exe, args, {stdio: ['ignore', 'ignore', process.stderr]})
+  var proc    = spawn(exe, args, {stdio: ['ignore', process.stdout, process.stderr]})
 
   proc.on('close', function(code){
     if(!!code) { callback("Compile error"); }
