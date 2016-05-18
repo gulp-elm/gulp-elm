@@ -78,6 +78,16 @@ describe('gulp-elm', function(){
     });
   });
 
+  it('should not error when bundling 0 Elm files.', function(done){
+    var output = "bundle.js";
+    var myElm = elm.bundle(output);
+    myElm.end();
+    myElm.once('data', function(file){
+      assert.fail('Should not have any data');
+    });
+    setTimeout(done, 1000);
+  });
+
   it('should error when output does not match filetype.', function(){
     var output = "bundle.js";
     try {
