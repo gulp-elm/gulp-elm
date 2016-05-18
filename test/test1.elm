@@ -1,6 +1,8 @@
-module Test1 where
+module Test1 exposing (..)
 
-import Text exposing (fromString)
-import Graphics.Element exposing (tag, leftAligned)
+import Html exposing (div, text)
+import Html.Attributes exposing (id)
 
-main = tag "hello" <| leftAligned <| fromString "Test" 
+
+main =
+    div [ id "hello" ] [ text "Test" ]

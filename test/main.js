@@ -10,7 +10,7 @@ function checkTest1(done){
 
     jsdom.env({
       html: '<html></html>',
-      src:  [file.contents, "Elm.fullscreen(Elm.Test1)"],
+      src:  [file.contents, "Elm.Test1.fullscreen()"],
       done: function(err, window){
         assert(!err);
         assert.equal(window.document.getElementById("hello").innerHTML, "Test");
@@ -21,12 +21,12 @@ function checkTest1(done){
 }
 
 describe('gulp-elm', function(){
-  
+
   before(function(done){
     this.timeout(30000);
     elm.init().then(done);
   });
-  
+
   it('should compile Elm to js from virtual file.', function(done){
     var myElm = elm();
     myElm.write(new gutil.File({path: "dummy", contents: fs.readFileSync('test/test1.elm')}));
@@ -59,7 +59,7 @@ describe('gulp-elm', function(){
         html: file.contents,
         done: function(err, window){
           assert(!err);
-          assert.equal(window.document.getElementsByTagName('script')[1].innerHTML, "Elm.fullscreen(Elm.Test1)");
+          assert.equal(window.document.getElementsByTagName('script')[1].innerHTML, "Elm.Test1.fullscreen()");
           done();
         }
       });
