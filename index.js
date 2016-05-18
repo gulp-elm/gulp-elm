@@ -231,7 +231,9 @@ function bundle(output, options) {
   }
 
   function endStream(callback) {
-
+    if (files.length === 0){
+      return;
+    }
     // buffer
     Q.when({phase: 'start'})
     .then(whichHandler.apply(this, [opts]))
