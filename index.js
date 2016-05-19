@@ -232,6 +232,7 @@ function bundle(output, options) {
 
   function endStream(callback) {
     if (files.length === 0){
+      callback();
       return;
     }
     // buffer

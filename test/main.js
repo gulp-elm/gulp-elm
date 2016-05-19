@@ -21,12 +21,12 @@ function checkTest1(done){
 }
 
 describe('gulp-elm', function(){
-  
+
   before(function(done){
     this.timeout(30000);
     elm.init().then(done);
   });
-  
+
   it('should compile Elm to js from virtual file.', function(done){
     var myElm = elm();
     myElm.write(new gutil.File({path: "dummy", contents: fs.readFileSync('test/test1.elm')}));
@@ -85,7 +85,7 @@ describe('gulp-elm', function(){
     myElm.once('data', function(file){
       assert.fail('Should not have any data');
     });
-    setTimeout(done, 1000);
+    myElm.once('end', done);
   });
 
   it('should error when output does not match filetype.', function(){
