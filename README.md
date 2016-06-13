@@ -34,7 +34,7 @@ If you compile multi file, all elm tasks depends on `elm.init` task.
 
 #### options
 
-* `elmMake` (default: `"elm-make"`)
+* `elmMake` (default: `"node_modules/.bin/elm-make"` if it exists, otherwise `"elm-make"`)
 
     `elm-make` executable file.
 
@@ -48,7 +48,7 @@ compile elm files.
 
     add `--yes` option to `elm-make`.
 
-* `elmMake` (default: `"elm-make"`)
+* `elmMake` (default: `"node_modules/.bin/elm-make"` if it exists, otherwise `"elm-make"`)
 
     `elm-make` executable file.
 
@@ -77,7 +77,7 @@ compile and bundle elm files into a single file.
 
     add `--yes` option to `elm-make`.
 
-* `elmMake` (default: `"elm-make"`)
+* `elmMake` (default: `"node_modules/.bin/elm-make"` if it exists, otherwise `"elm-make"`)
 
     `elm-make` executable file.
 
