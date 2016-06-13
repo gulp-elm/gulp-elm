@@ -8,15 +8,26 @@ var gutil         = require('gulp-util')
   , temp          = require('temp')
   , spawn         = require('cross-spawn')
   , Q             = require('q')
-  , elm_make_dev  = 'node_modules/.bin/elm-make'
-  , elm_make      = 'elm-make'
   , defaultArgs   = ['--yes']
   , PLUGIN        = 'gulp-elm';
+
+function getDefaultExe() {
+  try{
+    var elm_make_dev = 'node_modules/.bin/elm-make';
+    if(fs.statSync(elm_make_dev).isFile()){
+      return elm_make_dev;
+    }
+  }catch (err){
+    // local elm-make not available
+  }
+
+  return 'elm-make';
+}
 
 function processMakeOptions(options, output) {
   var args   = defaultArgs
     , ext    = '.js'
-    , exe    = fs.existsSync(elm_make_dev) && fs.statSync(elm_make_dev).isFile() ? elm_make_dev : elm_make;
+    , exe    = getDefaultExe();
 
   if(!!options){
     var yes = options.yesToAllPrompts;
@@ -37,7 +48,7 @@ function processMakeOptions(options, output) {
       if (output && path.extname(output) !== ext) { throw new gutil.PluginError(PLUGIN, 'output is ' + path.extname(output) + ', but filetype is ' + ext); }
     }
   }
-    
+
   return {args: args, ext: ext, exe: exe};
 }
 
