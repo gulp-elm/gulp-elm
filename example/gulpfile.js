@@ -13,6 +13,12 @@ gulp.task('multi', ['init'], function(){
     .pipe(gulp.dest('dest/'));
 });
 
+gulp.task('debug', ['init'], function(){
+  return gulp.src('elm/*.elm')
+    .pipe(elm.make({filetype: 'html', debug: true }))
+    .pipe(gulp.dest('dest/'));
+});
+
 gulp.task('pipe', ['init'], function(){
   return gulp.src('elm/test1.elm')
     .pipe(elm())

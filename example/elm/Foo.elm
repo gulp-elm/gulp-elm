@@ -1,5 +1,7 @@
-module Foo where
+module Foo exposing (..)
 
-import Graphics.Element exposing (empty)
+import Html exposing (text)
 
-foo = empty
+
+foo =
+    text ""

@@ -1,6 +1,8 @@
-module Test1 where
+module Test1 exposing (..)
 
-import Graphics.Element exposing (Element, show)
+import Html exposing (Html, text)
 
-main : Element
-main = show "Hello, World!"
+
+main : Html msg
+main =
+    text "Hello, World!"

@@ -39,6 +39,8 @@ function processMakeOptions(options, output) {
 
     if(options.warn === true) { args = args.concat(['--warn']); }
 
+    if(options.debug === true) { args = args.concat(['--debug']); }
+
     var ft = options.filetype;
     if(!!ft) {
       if(ft === 'js' || ft === 'javascript') { ext = '.js'; }

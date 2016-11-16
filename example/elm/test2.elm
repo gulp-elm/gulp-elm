@@ -1,7 +1,9 @@
-module Test2 where
+module Test2 exposing (..)
 
 import Foo
-import Graphics.Element exposing (Element)
+import Html exposing (Html)
 
-main : Element
-main = Foo.foo
+
+main : Html msg
+main =
+    Foo.foo

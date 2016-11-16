@@ -62,6 +62,9 @@ compile elm files.
 
     add `--warn` option to `elm-make`
 
+* `debug` (default: `false`)
+
+    add `--debug` option to `elm-make` (for Elm 0.18)
 
 ### `elm.bundle(output, options)`
 
@@ -84,3 +87,7 @@ compile and bundle elm files into a single file.
 * `warn` (default: `false`)
 
     add `--warn` option to `elm-make`
+
+* `debug` (default: `false`)
+
+    add `--debug` option to `elm-make` (for Elm 0.18)

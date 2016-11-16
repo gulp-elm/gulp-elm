@@ -1,6 +1,5 @@
-module Fail where
+module Fail exposing (..)
 
-import Text (plainText)
-iport Graphics.Element(tag)
+iport Html exposing (text)
 
-main = tag "hello" <| plainText "Test"
+main = p [] [ text "hello", text "Test" ]
