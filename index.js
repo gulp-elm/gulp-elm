@@ -55,12 +55,17 @@ function processMakeOptions(options, output) {
 }
 
 function compile(exe, args, callback){
-  var proc    = spawn(exe, args, {stdio: ['ignore', process.stdout, process.stderr]})
+  var proc    = spawn(exe, args)
+    , bStderr = new Buffer(0);
+
+  proc.stderr.on('data', function(stderr){
+    bStderr = Buffer.concat([bStderr, new Buffer(stderr)]);
+  });
 
   proc.on('close', function(code){
-    if(!!code) { callback("Compile error"); }
-    callback(null, "");
-  });
+    if(!!code) { callback(bStderr.toString()); }
+    callback(null, bStderr.toString());
+  });  
 }
 
 function init(options) {
