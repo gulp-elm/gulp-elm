@@ -13,7 +13,7 @@ var gutil         = require('gulp-util')
 
 function getDefaultExe() {
   try{
-    var elm_make_dev = 'node_modules/.bin/elm-make';
+    var elm_make_dev = path.resolve('node_modules/.bin/elm-make');
     if(fs.statSync(elm_make_dev).isFile()){
       return elm_make_dev;
     }
