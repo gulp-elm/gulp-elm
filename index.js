@@ -27,7 +27,8 @@ function getDefaultExe() {
 function processMakeOptions(options, output) {
   var args   = defaultArgs
     , ext    = '.js'
-    , exe    = getDefaultExe();
+    , exe    = getDefaultExe()
+    , spawn  = {};
 
   if(!!options){
     var yes = options.yesToAllPrompts;
@@ -41,6 +42,8 @@ function processMakeOptions(options, output) {
 
     if(options.debug === true) { args = args.concat(['--debug']); }
 
+    if(options.cwd) { spawn.cwd = options.cwd; }
+
     var ft = options.filetype;
     if(!!ft) {
       if(ft === 'js' || ft === 'javascript') { ext = '.js'; }
@@ -51,11 +54,11 @@ function processMakeOptions(options, output) {
     }
   }
 
-  return {args: args, ext: ext, exe: exe};
+  return {args: args, ext: ext, exe: exe, spawn: spawn};
 }
 
-function compile(exe, args, callback){
-  var proc    = spawn(exe, args)
+function compile(exe, args, options, callback){
+  var proc    = spawn(exe, args, options)
     , bStderr = new Buffer(0);
 
   proc.stderr.on('data', function(stderr){
@@ -65,14 +68,14 @@ function compile(exe, args, callback){
   proc.on('close', function(code){
     if(!!code) { callback(bStderr.toString()); }
     callback(null, bStderr.toString());
-  });  
+  });
 }
 
 function init(options) {
   var opts = processMakeOptions(options);
   var deferred = Q.defer();
 
-  compile(opts.exe, ['--yes'], function(err){
+  compile(opts.exe, ['--yes'], opts.spawn, function(err){
     if(!!err) { deferred.reject(new gutil.PluginError(PLUGIN, err)); }
     else      { deferred.resolve();   }
   });
@@ -137,7 +140,7 @@ function compileHandler(opts, file) {
       var deferred = Q.defer()
         , args = opts.args.concat(state.input, '--output', state.tmpOut);
       state.output = path.resolve(process.cwd(), path.basename(file.path, path.extname(file.path)) + opts.ext);
-      compile(state.exe, args, function(err, warnings){
+      compile(state.exe, args, opts.spawn, function(err, warnings){
         if(!!err) { deferred.reject({state: state, message: err}); }
         else      { deferred.resolve({state: state, warnings: warnings}); }
       });
@@ -152,7 +155,7 @@ function bundleHandler(output, opts, files) {
 
     var deferred = Q.defer()
     , args = opts.args.concat(files, '--output', state.tmpOut);
-    compile(state.exe, args, function(err, warnings){
+    compile(state.exe, args, opts.spawn, function(err, warnings){
       if(!!err) { deferred.reject({state: state, message: err}); }
       else      { deferred.resolve({state: state, warnings: warnings}); }
     });

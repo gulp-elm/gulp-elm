@@ -38,6 +38,10 @@ If you compile multi file, all elm tasks depends on `elm.init` task.
 
     `elm-make` executable file.
 
+* `cwd` (default: current working directory)
+
+    The working directory in which to execute `elm-make` (this should be the directory with `elm-package.json`).
+
 ### `elm(options)` / `elm.make(options)`
 
 compile elm files.
@@ -51,6 +55,10 @@ compile elm files.
 * `elmMake` (default: `"node_modules/.bin/elm-make"` if it exists, otherwise `"elm-make"`)
 
     `elm-make` executable file.
+
+* `cwd` (default: current working directory)
+
+    The working directory in which to execute `elm-make` (this should be the directory with `elm-package.json`).
 
 * `filetype` (default: `"js"`)
 
@@ -83,6 +91,10 @@ compile and bundle elm files into a single file.
 * `elmMake` (default: `"node_modules/.bin/elm-make"` if it exists, otherwise `"elm-make"`)
 
     `elm-make` executable file.
+
+* `cwd` (default: current working directory)
+
+    The working directory in which to execute `elm-make` (this should be the directory with `elm-package.json`).
 
 * `warn` (default: `false`)
 

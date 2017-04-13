@@ -1,6 +1,7 @@
 var assert = require('assert');
 var jsdom  = require('jsdom');
 var fs     = require('fs');
+var path   = require('path');
 var elm    = require('..');
 var gutil  = require('gulp-util');
 
@@ -24,24 +25,24 @@ describe('gulp-elm', function(){
 
   before(function(done){
     this.timeout(30000);
-    elm.init().then(done);
+    elm.init({cwd: 'test/'}).then(done);
   });
 
   it('should compile Elm to js from virtual file.', function(done){
-    var myElm = elm();
+    var myElm = elm({cwd: 'test/'});
     myElm.write(new gutil.File({path: "dummy", contents: fs.readFileSync('test/test1.elm')}));
     myElm.once('data', checkTest1(done));
   });
 
   it('should compile Elm to js from real file.', function(done){
-    var myElm = elm();
-    myElm.write(new gutil.File({path: "test/test1.elm", contents: new Buffer('dummy')}));
+    var myElm = elm({cwd: 'test/'});
+    myElm.write(new gutil.File({path: path.resolve("test/test1.elm"), contents: new Buffer('dummy')}));
     myElm.once('data', checkTest1(done));
   });
 
   it('should stop Elm to js failed.', function(done){
-    var myElm = elm();
-    myElm.write(new gutil.File({path: "test/fail.elm", contents: new Buffer('dummy')}));
+    var myElm = elm({cwd: 'test/'});
+    myElm.write(new gutil.File({path: path.resolve("test/fail.elm"), contents: new Buffer('dummy')}));
     myElm.once('error', function(error){
       assert(error);
       assert.equal(error.plugin, 'gulp-elm');
@@ -50,8 +51,8 @@ describe('gulp-elm', function(){
   });
 
   it('should compile Elm to html from real file.', function(done){
-    var myElm = elm({filetype: 'html'});
-    myElm.write(new gutil.File({path: "test/test1.elm", contents: new Buffer('dummy')}));
+    var myElm = elm({filetype: 'html', cwd: 'test/'});
+    myElm.write(new gutil.File({path: path.resolve("test/test1.elm"), contents: new Buffer('dummy')}));
     myElm.once('data', function(file){
       assert(file.isBuffer());
 
@@ -68,9 +69,9 @@ describe('gulp-elm', function(){
 
   it('should bundle Elm files to js from virtual file.', function(done){
     var output = "bundle.js";
-    var myElm = elm.bundle(output);
-    myElm.write(new gutil.File({path: "test/test1.elm", contents: fs.readFileSync('test/test1.elm')}));
-    myElm.end(new gutil.File({path: "test/test2.elm", contents: fs.readFileSync('test/test2.elm')}));
+    var myElm = elm.bundle(output, {cwd: 'test/'});
+    myElm.write(new gutil.File({path: path.resolve("test/test1.elm"), contents: fs.readFileSync('test/test1.elm')}));
+    myElm.end(new gutil.File({path: path.resolve("test/test2.elm"), contents: fs.readFileSync('test/test2.elm')}));
     myElm.once('data', function(file){
       assert(file.isBuffer());
       assert.equal(file.relative, output);
@@ -80,7 +81,7 @@ describe('gulp-elm', function(){
 
   it('should not error when bundling 0 Elm files.', function(done){
     var output = "bundle.js";
-    var myElm = elm.bundle(output);
+    var myElm = elm.bundle(output, {cwd: 'test/'});
     myElm.end();
     myElm.once('data', function(file){
       assert.fail('Should not have any data');
@@ -91,7 +92,7 @@ describe('gulp-elm', function(){
   it('should error when output does not match filetype.', function(){
     var output = "bundle.js";
     try {
-      var myElm = elm.bundle(output, {filetype: 'html'});
+      var myElm = elm.bundle(output, {filetype: 'html', cwd: 'test/'});
     } catch (error) {
       assert(error);
       assert.equal(error.plugin, 'gulp-elm');

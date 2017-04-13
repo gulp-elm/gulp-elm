@@ -6,10 +6,19 @@ var gutil  = require('gulp-util');
 
 // elm-make --yes
 gulp.task('init', elm.init);
+gulp.task('init-nested', function(){
+  return elm.init({cwd: 'elm/nested-elm/'});
+});
 
 gulp.task('multi', ['init'], function(){
   return gulp.src('elm/*.elm')
     .pipe(elm.make({filetype: 'html'}))
+    .pipe(gulp.dest('dest/'));
+});
+
+gulp.task('nested', ['init-nested'], function(){
+  return gulp.src('elm/nested-elm/*.elm')
+    .pipe(elm.make({filetype: 'html', cwd: 'elm/nested-elm/'}))
     .pipe(gulp.dest('dest/'));
 });
 
