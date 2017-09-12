@@ -28,9 +28,15 @@ function checkTest1(done){
 
 describe('gulp-elm', function(){
 
-  before(function(done){
-    this.timeout(30000);
-    elm.init({cwd: 'test/'}).then(done);
+  var millisecondsPerSecond = 1000;
+  var secondsPerMinute = 60;
+  var elmMakeTimeoutInMinutes = 5;
+  var elmMakeTimeout = millisecondsPerSecond * secondsPerMinute * elmMakeTimeoutInMinutes;
+  this.timeout(elmMakeTimeout);
+
+  before(function(){
+    this.timeout(elmMakeTimeout);
+    return elm.init({cwd: 'test/'});
   });
 
   it('should compile Elm to js from virtual file.', function(done){
