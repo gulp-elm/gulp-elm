@@ -5,7 +5,6 @@ environment:
     - nodejs_version: node/lts
     - nodejs_version: node/Carbon
     - nodejs_version: node/Boron
-    - nodejs_version: node/Argon
     - nodejs_version: nightly/latest
     - nodejs_version: chakracore/latest
 
@@ -19,7 +18,7 @@ install:
   - nvs add %NODEJS_VERSION%
   - nvs use %NODEJS_VERSION%
   - yarn global add elm
-  - yarn
+  - npm
 
 test_script:
   # Output useful info for debugging.
@@ -27,6 +26,7 @@ test_script:
   - nvs --version
   - node --version
   - yarn --version
+  - npm --version
   # run tests
   - yarn test -- --no-timeouts
 
