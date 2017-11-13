@@ -1,21 +1,30 @@
 environment:
+  NVS_VERSION: 1.4.2
   matrix:
-    - nodejs_version: "6"
-    - nodejs_version: "7"
-    - nodejs_version: "8"
+    - nodejs_version: node/latest
+    - nodejs_version: node/lts
+    - nodejs_version: node/Carbon
+    - nodejs_version: node/Boron
+    - nodejs_version: node/Argon
+    - nodejs_version: nightly/latest
+    - nodejs_version: chakracore/latest
 
 cache:
  - "%LOCALAPPDATA%\\Yarn"
 
 install:
-  # Get the latest stable version of Node.js or io.js
-  - ps: Install-Product node $env:nodejs_version
+  # Install NVS
+  - git clone --branch v%NVS_VERSION% --depth 1 https://github.com/jasongin/nvs %LOCALAPPDATA%\nvs
+  - set PATH=%LOCALAPPDATA%\nvs;%PATH%
+  - nvs add %NODEJS_VERSION%
+  - nvs use %NODEJS_VERSION%
   - yarn global add elm
   - yarn
 
 test_script:
   # Output useful info for debugging.
   - ps: where.exe elm-make
+  - nvs --version
   - node --version
   - yarn --version
   # run tests
