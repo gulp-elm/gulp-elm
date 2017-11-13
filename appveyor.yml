@@ -18,7 +18,7 @@ install:
   - nvs add %NODEJS_VERSION%
   - nvs use %NODEJS_VERSION%
   - yarn global add elm
-  - npm
+  - npm install
 
 test_script:
   # Output useful info for debugging.
