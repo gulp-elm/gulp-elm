@@ -22,8 +22,8 @@ install:
   - node --version
   - yarn --version
   # Install global dependencies
-  - yarn global add elm
-  - yarn global add greenkeeper-lockfile@1
+  - yarn global add elm --no-node-version-check
+  - yarn global add greenkeeper-lockfile@1 --no-node-version-check --ignore-engines
   - yarn --no-node-version-check
 
 before_script:
