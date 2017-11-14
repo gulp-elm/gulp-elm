@@ -8,6 +8,11 @@ environment:
     - nodejs_version: nightly/latest
     - nodejs_version: chakracore/latest
 
+matrix:
+  allow_failures:
+    - nodejs_version: nightly/latest
+    - nodejs_version: chakracore/latest
+
 cache:
  - "%LOCALAPPDATA%\\Yarn"
 
