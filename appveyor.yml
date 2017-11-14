@@ -20,7 +20,7 @@ install:
   # Install Elm
   - yarn global add elm
   # Install node modules with Yarn (ignore faulty engines check with Yarn and Node v10)
-  - ps: if ($env:nodejs_version -eq 'nightly/latest') { yarn --ignore-engines } else { yarn }
+  - ps: $args = @('--no-node-version-check'); if ($env:nodejs_version -eq 'nightly/latest') { $args += '--ignore-engines' }; yarn @args
 
 test_script:
   # Output useful info for debugging.
@@ -29,7 +29,7 @@ test_script:
   - node --version
   - yarn --version
   # run tests
-  - yarn test -- --no-timeouts
+  - yarn test --no-node-version-check -- --no-timeouts
 
 # Don't actually build.
 build: off
