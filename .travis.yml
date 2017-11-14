@@ -6,13 +6,25 @@ dist: trusty
 
 language: node_js
 
-cache: yarn
+cache:
+  yarn
+  directories:
+    - sysconfcpus
 
 before_install:
   # Install NVS.
   - git clone --branch v$NVS_VERSION --depth 1 https://github.com/jasongin/nvs ~/.nvs
   - . ~/.nvs/nvs.sh
   - nvs --version
+  - | # epic build time improvement - see https://github.com/elm-lang/elm-compiler/issues/1473#issuecomment-245704142
+    if [ ! -d sysconfcpus/bin ];
+    then
+      git clone https://github.com/obmarg/libsysconfcpus.git;
+      cd libsysconfcpus;
+      ./configure --prefix=$TRAVIS_BUILD_DIR/sysconfcpus;
+      make && make install;
+      cd ..;
+    fi
 
 install:
   # Install the selected version of Node.js using NVS.
@@ -23,6 +35,9 @@ install:
   - yarn --version
   # Install global dependencies
   - yarn global add elm --no-node-version-check
+  - mv $(yarn global bin)/elm-make $(yarn global bin)/elm-make-old
+  - printf "#\041/bin/bash\n\necho \"Running elm-make with sysconfcpus -n 2\"\n\n$TRAVIS_BUILD_DIR/sysconfcpus/bin/sysconfcpus -n 2 elm-make-old \"\$@\"" > $(yarn global bin)/elm-make
+  - chmod +x $(yarn global bin)/elm-make
   - yarn global add greenkeeper-lockfile@1 --no-node-version-check --ignore-engines
   - if [ $NODEJS_VERSION == "nightly/latest" ]; then yarn --no-node-version-check --ignore-engines; else yarn --no-node-version-check; fi
 
