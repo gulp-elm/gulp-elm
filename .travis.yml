@@ -7,7 +7,7 @@ dist: trusty
 language: node_js
 
 cache:
-  yarn
+  yarn: true
   directories:
     - sysconfcpus
 
