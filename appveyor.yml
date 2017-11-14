@@ -17,8 +17,10 @@ install:
   - set PATH=%LOCALAPPDATA%\nvs;%PATH%
   - nvs add %NODEJS_VERSION%
   - nvs use %NODEJS_VERSION%
+  # Install Elm
   - yarn global add elm
-  - npm install
+  # Install node modules with Yarn (ignore faulty engines check with Yarn and Node v10)
+  - ps: if ($env:nodejs_version -eq 'nightly/latest') { yarn --ignore-engines } else { yarn }
 
 test_script:
   # Output useful info for debugging.
@@ -26,7 +28,6 @@ test_script:
   - nvs --version
   - node --version
   - yarn --version
-  - npm --version
   # run tests
   - yarn test -- --no-timeouts
 
