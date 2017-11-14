@@ -24,7 +24,7 @@ install:
   # Install global dependencies
   - yarn global add elm --no-node-version-check
   - yarn global add greenkeeper-lockfile@1 --no-node-version-check --ignore-engines
-  - yarn --no-node-version-check
+  - if [ $NODEJS_VERSION == "nightly/latest" ]; then yarn --no-node-version-check --ignore-engines; else yarn --no-node-version-check; fi
 
 before_script:
   - greenkeeper-lockfile-update
