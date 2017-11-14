@@ -5,6 +5,7 @@ os:
 dist: trusty
 
 language: node_js
+node_js: lts/*
 
 cache:
   yarn: true
