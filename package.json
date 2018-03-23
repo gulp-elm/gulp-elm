@@ -13,10 +13,8 @@
   },
   "readmeFilename": "README.md",
   "main": "index.js",
-  "keywords": [
-    "gulpplugin",
-    "elm"
-  ],
+  "files": ["index.js"],
+  "keywords": ["gulpplugin", "elm"],
   "scripts": {
     "test": "mocha ./test/main.js"
   },
