@@ -1,25 +1,40 @@
 environment:
+  NVS_VERSION: 1.4.2
   matrix:
-    - nodejs_version: "6"
-    - nodejs_version: "7"
-    - nodejs_version: "8"
+    - nodejs_version: node/latest
+    - nodejs_version: node/lts
+    - nodejs_version: node/Carbon
+    - nodejs_version: node/Boron
+    - nodejs_version: nightly/latest
+    - nodejs_version: chakracore/latest
+
+matrix:
+  allow_failures:
+    - nodejs_version: nightly/latest
+    - nodejs_version: chakracore/latest
 
 cache:
  - "%LOCALAPPDATA%\\Yarn"
 
 install:
-  # Get the latest stable version of Node.js or io.js
-  - ps: Install-Product node $env:nodejs_version
+  # Install NVS
+  - git clone --branch v%NVS_VERSION% --depth 1 https://github.com/jasongin/nvs %LOCALAPPDATA%\nvs
+  - set PATH=%LOCALAPPDATA%\nvs;%PATH%
+  - nvs add %NODEJS_VERSION%
+  - nvs use %NODEJS_VERSION%
+  # Install Elm
   - yarn global add elm
-  - yarn
+  # Install node modules with Yarn (ignore faulty engines check with Yarn and Node v10)
+  - ps: $args = @('--no-node-version-check'); if ($env:nodejs_version -eq 'nightly/latest') { $args += '--ignore-engines' }; yarn @args
 
 test_script:
   # Output useful info for debugging.
   - ps: where.exe elm-make
+  - nvs --version
   - node --version
   - yarn --version
   # run tests
-  - yarn test -- --no-timeouts
+  - yarn test --no-node-version-check -- --no-timeouts
 
 # Don't actually build.
 build: off

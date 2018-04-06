@@ -1,24 +1,72 @@
+os:
+- linux
+- osx
+
+dist: trusty
+
 language: node_js
+node_js: lts/*
 
-node_js:
-  - "6"
-  - "7"
-  - "8"
-
-cache: yarn
+cache:
+  yarn: true
+  directories:
+    - sysconfcpus
 
 before_install:
-  - yarn global add elm
-  - yarn global add greenkeeper-lockfile@1
+  # Install NVS.
+  - git clone --branch v$NVS_VERSION --depth 1 https://github.com/jasongin/nvs ~/.nvs
+  - . ~/.nvs/nvs.sh
+  - nvs --version
+  # Install latest Yarn
+  - curl -o- -L https://yarnpkg.com/install.sh | bash -s
+  - export PATH="$HOME/.yarn/bin:$PATH"
+  - | # epic build time improvement - see https://github.com/elm-lang/elm-compiler/issues/1473#issuecomment-245704142
+    if [ ! -d sysconfcpus/bin ];
+    then
+      git clone https://github.com/obmarg/libsysconfcpus.git;
+      cd libsysconfcpus;
+      ./configure --prefix=$TRAVIS_BUILD_DIR/sysconfcpus;
+      make && make install;
+      cd ..;
+    fi
+
+install:
+  # Install the selected version of Node.js using NVS.
+  - nvs add $NODEJS_VERSION
+  - nvs use $NODEJS_VERSION
+  # Output versions for debugging
+  - node --version
+  - yarn --version
+  # Install global dependencies
+  - yarn global add elm --no-node-version-check
+  - mv $(yarn global bin)/elm-make $(yarn global bin)/elm-make-old
+  - printf "#\041/bin/bash\n\necho \"Running elm-make with sysconfcpus -n 2\"\n\n$TRAVIS_BUILD_DIR/sysconfcpus/bin/sysconfcpus -n 2 elm-make-old \"\$@\"" > $(yarn global bin)/elm-make
+  - chmod +x $(yarn global bin)/elm-make
+  - yarn global add greenkeeper-lockfile@1 --no-node-version-check --ignore-engines
+  - if [ $NODEJS_VERSION == "nightly/latest" ]; then yarn --no-node-version-check --ignore-engines; else yarn --no-node-version-check; fi
 
 before_script:
   - greenkeeper-lockfile-update
 
 script:
-  - yarn test -- --no-timeouts
+  - yarn test --no-node-version-check -- --no-timeouts
 
 after_script:
   - greenkeeper-lockfile-upload
 
 env:
-  secure: ivQuJpCTEa12PEBIUsrELNfUu50tM5CvyTwcXHnDxSKwR55XbjvW7ePrjWeYE4mMilxcI9BFddThjuXh9fu3MF8GHnS8Qd87wIm3VjgN703Fo3tpos48pBVE2Y8V9NFhxbpKrRnBxO5D9JmXSP58cTp84Xl3FQEZMLZVeDH2LbowugmcIj1FCEyVTNQEE7z8XAwbHr+a5Grj33J5YAOHmdDPmOLF9UtsPBjzwXdNqm8rUZoPacEjnSA+dP1dXcvlwYtNyKutOvcuo7bHCDlSkR/l1KH1eFTUZsef3HAn68L76UrXvXf+tbxToViQzDZdiPDV0kG57wZgR3ZhVXJsAeArFUxZr1T2J8QU+sL56cmL8R5f0N5R+q7rEtP3XsIVgQbOKo67dPeQj+s8B73uzjpaZq76T24u+sFS1bjRs3ba6/PL24uTHwPohFJAIUrhHa+UE4b/BOa0XYy+qIswAzD/eYIQUJ9wps3JaeympULIpBe7LKXjT0pfl8RB4hm2W3s1II+IKTcyT1hj1A0UKfuOdwqFLaHHv4nsFnMbVSimuisWX3Gjr0I1MRyT/eIQbbjwbKDNpP96ofVgjw+biWDDLg2Wm7XsOFiA4xIWgmgK3q3iM1fod+lBivfHMlRLdYS4TfizYSZtpaaXoZUl9jijQADILojag81tXOP36cw=
+  global:
+  - NVS_VERSION=1.4.2
+  - secure: ivQuJpCTEa12PEBIUsrELNfUu50tM5CvyTwcXHnDxSKwR55XbjvW7ePrjWeYE4mMilxcI9BFddThjuXh9fu3MF8GHnS8Qd87wIm3VjgN703Fo3tpos48pBVE2Y8V9NFhxbpKrRnBxO5D9JmXSP58cTp84Xl3FQEZMLZVeDH2LbowugmcIj1FCEyVTNQEE7z8XAwbHr+a5Grj33J5YAOHmdDPmOLF9UtsPBjzwXdNqm8rUZoPacEjnSA+dP1dXcvlwYtNyKutOvcuo7bHCDlSkR/l1KH1eFTUZsef3HAn68L76UrXvXf+tbxToViQzDZdiPDV0kG57wZgR3ZhVXJsAeArFUxZr1T2J8QU+sL56cmL8R5f0N5R+q7rEtP3XsIVgQbOKo67dPeQj+s8B73uzjpaZq76T24u+sFS1bjRs3ba6/PL24uTHwPohFJAIUrhHa+UE4b/BOa0XYy+qIswAzD/eYIQUJ9wps3JaeympULIpBe7LKXjT0pfl8RB4hm2W3s1II+IKTcyT1hj1A0UKfuOdwqFLaHHv4nsFnMbVSimuisWX3Gjr0I1MRyT/eIQbbjwbKDNpP96ofVgjw+biWDDLg2Wm7XsOFiA4xIWgmgK3q3iM1fod+lBivfHMlRLdYS4TfizYSZtpaaXoZUl9jijQADILojag81tXOP36cw=
+  matrix:
+  - NODEJS_VERSION=node/latest
+  - NODEJS_VERSION=node/lts
+  - NODEJS_VERSION=node/Carbon
+  - NODEJS_VERSION=node/Boron
+  - NODEJS_VERSION=nightly/latest
+  - NODEJS_VERSION=chakracore/latest
+
+matrix:
+  allow_failures:
+    - env: NODEJS_VERSION=nightly/latest
+    - env: NODEJS_VERSION=chakracore/latest
