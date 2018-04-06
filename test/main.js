@@ -1,31 +1,42 @@
-var assert = require('assert');
-var jsdom  = require('jsdom');
-var fs     = require('fs');
-var path   = require('path');
-var elm    = require('..');
-var gutil  = require('gulp-util');
+var assert     = require('assert');
+var { JSDOM }  = require('jsdom');
+var fs         = require('fs');
+var path       = require('path');
+var elm        = require('..');
+var gutil      = require('gulp-util');
 
 function checkTest1(done){
   return function(file){
     assert(file.isBuffer());
-    jsdom.env({
-      html: '<html><body><script></script><body></html>',
-      src:  [file.contents, "Elm.Test1.fullscreen()"],
-      done: function(err, window){
-        assert(!err);
-        // TODO: need to figure out how to inspect the DOM element.
-        // assert.equal(window.document.getElementById("hello").innerHTML, "Test");
-        done();
+
+    var html = '<html><body><script>' + file.contents + '</script><script>Elm.Test1.fullscreen()</script><body></html>';
+    var { window } = new JSDOM(html, { runScripts: 'dangerously', });
+
+    setTimeout(function testHello(){
+      var hello = window.document.getElementById("hello");
+      if (!hello) {
+        setTimeout(testHello, 25);
+        return
       }
-    });
+
+      assert.equal(hello.innerHTML, "Test");
+
+      done();
+    }, 25);
   }
 }
 
 describe('gulp-elm', function(){
 
-  before(function(done){
-    this.timeout(30000);
-    elm.init({cwd: 'test/'}).then(done);
+  var millisecondsPerSecond = 1000;
+  var secondsPerMinute = 60;
+  var elmMakeTimeoutInMinutes = 5;
+  var elmMakeTimeout = millisecondsPerSecond * secondsPerMinute * elmMakeTimeoutInMinutes;
+  this.timeout(elmMakeTimeout);
+
+  before(function(){
+    this.timeout(elmMakeTimeout);
+    return elm.init({cwd: 'test/'});
   });
 
   it('should compile Elm to js from virtual file.', function(done){
@@ -56,14 +67,9 @@ describe('gulp-elm', function(){
     myElm.once('data', function(file){
       assert(file.isBuffer());
 
-      jsdom.env({
-        html: file.contents,
-        done: function(err, window){
-          assert(!err);
-          assert.equal(window.document.getElementsByTagName('script')[1].innerHTML, "Elm.Test1.fullscreen()");
-          done();
-        }
-      });
+      var { window } = new JSDOM(file.contents);
+      assert.equal(window.document.getElementsByTagName('script')[1].innerHTML, "Elm.Test1.fullscreen()");
+      done();
     });
   });
 
