@@ -1,7 +1,7 @@
 gulp-elm
 ===
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/bdukes/gulp-elm.svg)](https://greenkeeper.io/)
+[![Greenkeeper badge](https://badges.greenkeeper.io/gulp-elm/gulp-elm.svg)](https://greenkeeper.io/)
 
 Example
 ---
