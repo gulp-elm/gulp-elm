@@ -62,10 +62,10 @@ function processMakeOptions(options, output) {
 
 function compile(exe, args, options, callback){
   var proc    = spawn(exe, args, options)
-    , bStderr = new Buffer(0);
+    , bStderr = Buffer.alloc(0);
 
   proc.stderr.on('data', function(stderr){
-    bStderr = Buffer.concat([bStderr, new Buffer(stderr)]);
+    bStderr = Buffer.concat([bStderr, Buffer.from(stderr)]);
   });
 
   proc.on('close', function(code){

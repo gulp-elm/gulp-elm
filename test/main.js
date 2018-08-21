@@ -47,13 +47,13 @@ describe('gulp-elm', function(){
 
   it('should compile Elm to js from real file.', function(done){
     var myElm = elm({cwd: 'test/'});
-    myElm.write(new Vinyl({path: path.resolve("test/test1.elm"), contents: new Buffer('dummy')}));
+    myElm.write(new Vinyl({path: path.resolve("test/test1.elm"), contents: Buffer.from('dummy')}));
     myElm.once('data', checkTest1(done));
   });
 
   it('should stop Elm to js failed.', function(done){
     var myElm = elm({cwd: 'test/'});
-    myElm.write(new Vinyl({path: path.resolve("test/fail.elm"), contents: new Buffer('dummy')}));
+    myElm.write(new Vinyl({path: path.resolve("test/fail.elm"), contents: Buffer.from('dummy')}));
     myElm.once('error', function(error){
       assert(error);
       assert.equal(error.plugin, 'gulp-elm');
@@ -63,7 +63,7 @@ describe('gulp-elm', function(){
 
   it('should compile Elm to html from real file.', function(done){
     var myElm = elm({filetype: 'html', cwd: 'test/'});
-    myElm.write(new Vinyl({path: path.resolve("test/test1.elm"), contents: new Buffer('dummy')}));
+    myElm.write(new Vinyl({path: path.resolve("test/test1.elm"), contents: Buffer.from('dummy')}));
     myElm.once('data', function(file){
       assert(file.isBuffer());
 
