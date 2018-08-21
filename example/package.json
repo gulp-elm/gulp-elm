@@ -10,8 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "elm": "^0.18.0",
-    "gulp": "^3.8.11",
-    "gulp-elm": "*",
-    "gulp-uglifyjs": "^0.5.0"
+    "gulp": "^4.0.0",
+    "gulp-elm": "file:..",
+    "gulp-uglifyjs": "^0.6.2"
   }
 }
