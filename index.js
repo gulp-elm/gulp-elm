@@ -1,6 +1,9 @@
 'use strict';
 
-var gutil         = require('gulp-util')
+var PluginError   = require('plugin-error')
+  , log           = require('fancy-log')
+  , colors        = require('ansi-colors')
+  , Vinyl         = require('vinyl')
   , through       = require('through2')
   , which         = require('which')
   , fs            = require('fs')
@@ -48,9 +51,9 @@ function processMakeOptions(options, output) {
     if(!!ft) {
       if(ft === 'js' || ft === 'javascript') { ext = '.js'; }
       else if (ft == 'html') { ext = '.html'; }
-      else { throw new gutil.PluginError(PLUGIN, 'filetype is js or html.'); }
+      else { throw new PluginError(PLUGIN, 'filetype is js or html.'); }
 
-      if (output && path.extname(output) !== ext) { throw new gutil.PluginError(PLUGIN, 'output is ' + path.extname(output) + ', but filetype is ' + ext); }
+      if (output && path.extname(output) !== ext) { throw new PluginError(PLUGIN, 'output is ' + path.extname(output) + ', but filetype is ' + ext); }
     }
   }
 
@@ -76,7 +79,7 @@ function init(options) {
   var deferred = Q.defer();
 
   compile(opts.exe, ['--yes'], opts.spawn, function(err){
-    if(!!err) { deferred.reject(new gutil.PluginError(PLUGIN, err)); }
+    if(!!err) { deferred.reject(new PluginError(PLUGIN, err)); }
     else      { deferred.resolve();   }
   });
 
@@ -89,7 +92,7 @@ function whichHandler(opts) {
       var deferred = Q.defer();
       which(opts.exe, function(err, exe){
         if(!!err){
-          deferred.reject({state: state, message: 'Failed to find ' + gutil.colors.magenta(opts.exe) + ' in your path.'});
+          deferred.reject({state: state, message: 'Failed to find ' + colors.magenta(opts.exe) + ' in your path.'});
         }
         state.exe = exe;
         deferred.resolve(state);
@@ -167,11 +170,11 @@ function pushResultHandler() {
   return function(result){
       var state = result.state;
       state.phase = 'push';
-      if(result.warnings) { gutil.log(result.warnings); }
+      if(result.warnings) { log(result.warnings); }
       var deferred = Q.defer();
       fs.readFile(result.state.tmpOut, function(err, contents){
         if(!!err) {deferred.reject({state: state, message: err}); }
-      this.push(new gutil.File({
+      this.push(new Vinyl({
           path: state.output,
           contents: contents
         }));
@@ -184,7 +187,7 @@ function pushResultHandler() {
 function failHandler() {
   return function(rej){
     console.log(rej.message);
-    this.emit('error', new gutil.PluginError(PLUGIN, rej.message));
+    this.emit('error', new PluginError(PLUGIN, rej.message));
       return rej.state;
   }.bind(this);
 }
@@ -223,7 +226,7 @@ function make(options){
 
     // stream
     if(file.isStream()){
-      this.emit('error', new gutil.PluginError(PLUGIN, 'Streams are not supported!'));
+      this.emit('error', new PluginError(PLUGIN, 'Streams are not supported!'));
       return callback();
     }
 
@@ -243,7 +246,7 @@ function make(options){
 }
 
 function bundle(output, options) {
-  if (!output) { throw new gutil.PluginError(PLUGIN, 'output filename is required when bundling.') }
+  if (!output) { throw new PluginError(PLUGIN, 'output filename is required when bundling.') }
   var opts = processMakeOptions(options, output);
   var files = [];
 

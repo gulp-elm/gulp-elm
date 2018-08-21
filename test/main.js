@@ -3,7 +3,7 @@ var { JSDOM }  = require('jsdom');
 var fs         = require('fs');
 var path       = require('path');
 var elm        = require('..');
-var gutil      = require('gulp-util');
+var Vinyl      = require('vinyl');
 
 function checkTest1(done){
   return function(file){
@@ -41,19 +41,19 @@ describe('gulp-elm', function(){
 
   it('should compile Elm to js from virtual file.', function(done){
     var myElm = elm({cwd: 'test/'});
-    myElm.write(new gutil.File({path: "dummy", contents: fs.readFileSync('test/test1.elm')}));
+    myElm.write(new Vinyl({path: "dummy", contents: fs.readFileSync('test/test1.elm')}));
     myElm.once('data', checkTest1(done));
   });
 
   it('should compile Elm to js from real file.', function(done){
     var myElm = elm({cwd: 'test/'});
-    myElm.write(new gutil.File({path: path.resolve("test/test1.elm"), contents: new Buffer('dummy')}));
+    myElm.write(new Vinyl({path: path.resolve("test/test1.elm"), contents: new Buffer('dummy')}));
     myElm.once('data', checkTest1(done));
   });
 
   it('should stop Elm to js failed.', function(done){
     var myElm = elm({cwd: 'test/'});
-    myElm.write(new gutil.File({path: path.resolve("test/fail.elm"), contents: new Buffer('dummy')}));
+    myElm.write(new Vinyl({path: path.resolve("test/fail.elm"), contents: new Buffer('dummy')}));
     myElm.once('error', function(error){
       assert(error);
       assert.equal(error.plugin, 'gulp-elm');
@@ -63,7 +63,7 @@ describe('gulp-elm', function(){
 
   it('should compile Elm to html from real file.', function(done){
     var myElm = elm({filetype: 'html', cwd: 'test/'});
-    myElm.write(new gutil.File({path: path.resolve("test/test1.elm"), contents: new Buffer('dummy')}));
+    myElm.write(new Vinyl({path: path.resolve("test/test1.elm"), contents: new Buffer('dummy')}));
     myElm.once('data', function(file){
       assert(file.isBuffer());
 
@@ -76,8 +76,8 @@ describe('gulp-elm', function(){
   it('should bundle Elm files to js from virtual file.', function(done){
     var output = "bundle.js";
     var myElm = elm.bundle(output, {cwd: 'test/'});
-    myElm.write(new gutil.File({path: path.resolve("test/test1.elm"), contents: fs.readFileSync('test/test1.elm')}));
-    myElm.end(new gutil.File({path: path.resolve("test/test2.elm"), contents: fs.readFileSync('test/test2.elm')}));
+    myElm.write(new Vinyl({path: path.resolve("test/test1.elm"), contents: fs.readFileSync('test/test1.elm')}));
+    myElm.end(new Vinyl({path: path.resolve("test/test2.elm"), contents: fs.readFileSync('test/test2.elm')}));
     myElm.once('data', function(file){
       assert(file.isBuffer());
       assert.equal(file.relative, output);

@@ -2,7 +2,7 @@ var gulp   = require('gulp');
 var elm    = require('gulp-elm');
 var uglify = require('gulp-uglifyjs');
 var fs     = require('fs');
-var gutil  = require('gulp-util');
+var Vinyl  = require('vinyl');
 
 // elm-make --yes
 gulp.task('init', elm.init);
@@ -38,7 +38,7 @@ gulp.task('pipe', ['init'], function(){
 function string_src(filename, string) {
   var src = require('stream').Readable({ objectMode: true })
   src._read = function () {
-    this.push(new gutil.File({ cwd: "", base: "", path: filename, contents: new Buffer(string) }))
+    this.push(new Vinyl({ cwd: "", base: "", path: filename, contents: Buffer.from(string) }))
     this.push(null)
   }
   return src
