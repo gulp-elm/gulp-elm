@@ -11,39 +11,36 @@ var PluginError   = require('plugin-error')
   , temp          = require('temp').track()
   , spawn         = require('cross-spawn')
   , Q             = require('q')
-  , defaultArgs   = ['--yes']
+  , defaultArgs   = ['make']
   , PLUGIN        = 'gulp-elm';
 
 function getDefaultExe() {
   try{
-    var elm_make_dev = path.resolve('node_modules/.bin/elm-make');
-    if(fs.statSync(elm_make_dev).isFile()){
-      return elm_make_dev;
+    var elm_dev = path.resolve('node_modules/.bin/elm');
+    if(fs.statSync(elm_dev).isFile()){
+      return elm_dev;
     }
   }catch (err){
     // local elm-make not available
   }
 
-  return 'elm-make';
+  return 'elm';
 }
 
-function processMakeOptions(options, output) {
+function processElmOptions(options, output) {
   var args   = defaultArgs
     , ext    = '.js'
     , exe    = getDefaultExe()
     , spawn  = {};
 
   if(!!options){
-    var yes = options.yesToAllPrompts;
-    if(yes !== undefined && !yes) {
-      args = [];
-    }
-
-    if(options.elmMake) { exe = options.elmMake; }
+    if(options.elm) { exe = options.elm; }
 
     if(options.warn === true) { args = args.concat(['--warn']); }
 
     if(options.debug === true) { args = args.concat(['--debug']); }
+
+    if(options.optimize === true) { args = args.concat(['--optimize']); }
 
     if(options.cwd) { spawn.cwd = options.cwd; }
 
@@ -69,21 +66,8 @@ function compile(exe, args, options, callback){
   });
 
   proc.on('close', function(code){
-    if(!!code) { callback(bStderr.toString()); }
-    callback(null, bStderr.toString());
+    callback(code, bStderr.toString());
   });
-}
-
-function init(options) {
-  var opts = processMakeOptions(options);
-  var deferred = Q.defer();
-
-  compile(opts.exe, ['--yes'], opts.spawn, function(err){
-    if(!!err) { deferred.reject(new PluginError(PLUGIN, err)); }
-    else      { deferred.resolve();   }
-  });
-
-  return deferred.promise;
 }
 
 function whichHandler(opts) {
@@ -144,7 +128,7 @@ function compileHandler(opts, file) {
         , args = opts.args.concat(state.input, '--output', state.tmpOut);
       state.output = path.resolve(process.cwd(), path.basename(file.path, path.extname(file.path)) + opts.ext);
       compile(state.exe, args, opts.spawn, function(err, warnings){
-        if(!!err) { deferred.reject({state: state, message: err}); }
+        if(!!err) { deferred.reject({state: state, message: warnings}); }
         else      { deferred.resolve({state: state, warnings: warnings}); }
       });
       return deferred.promise;
@@ -159,7 +143,7 @@ function bundleHandler(output, opts, files) {
     var deferred = Q.defer()
     , args = opts.args.concat(files, '--output', state.tmpOut);
     compile(state.exe, args, opts.spawn, function(err, warnings){
-      if(!!err) { deferred.reject({state: state, message: err}); }
+      if(!!err) { deferred.reject({state: state, message: warnings}); }
       else      { deferred.resolve({state: state, warnings: warnings}); }
     });
     return deferred.promise;
@@ -214,7 +198,7 @@ function doneHandler(callback) {
 }
 
 function make(options){
-  var opts = processMakeOptions(options);
+  var opts = processElmOptions(options);
 
   function transform(file, encode, callback) {
 
@@ -247,7 +231,7 @@ function make(options){
 
 function bundle(output, options) {
   if (!output) { throw new PluginError(PLUGIN, 'output filename is required when bundling.') }
-  var opts = processMakeOptions(options, output);
+  var opts = processElmOptions(options, output);
   var files = [];
 
   function transform(file, encoding, callback) {
@@ -276,4 +260,3 @@ function bundle(output, options) {
 module.exports      = make;
 module.exports.make = make;
 module.exports.bundle = bundle;
-module.exports.init = init;
