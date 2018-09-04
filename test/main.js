@@ -34,11 +34,6 @@ describe('gulp-elm', function(){
   var elmMakeTimeout = millisecondsPerSecond * secondsPerMinute * elmMakeTimeoutInMinutes;
   this.timeout(elmMakeTimeout);
 
-  before(function(){
-    this.timeout(elmMakeTimeout);
-    return elm.init({cwd: 'test/'});
-  });
-
   it('should compile Elm to js from virtual file.', function(done){
     var myElm = elm({cwd: 'test/'});
     myElm.write(new Vinyl({path: "dummy", contents: fs.readFileSync('test/test1.elm')}));
