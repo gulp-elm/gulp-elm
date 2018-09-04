@@ -29,7 +29,7 @@ install:
 
 test_script:
   # Output useful info for debugging.
-  - ps: where.exe elm-make
+  - ps: where.exe elm
   - nvs --version
   - node --version
   - yarn --version
