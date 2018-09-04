@@ -9,7 +9,7 @@ function checkTest1(done){
   return function(file){
     assert(file.isBuffer());
 
-    var html = '<html><body><script>' + file.contents + '</script><script>Elm.Test1.fullscreen()</script><body></html>';
+    var html = '<html><body><div id="elm-test1"></div><script>' + file.contents + '</script><script>Elm.Test1.init({ node: document.getElementById("elm-test1") })</script><body></html>';
     var { window } = new JSDOM(html, { runScripts: 'dangerously', });
 
     setTimeout(function testHello(){
@@ -63,7 +63,7 @@ describe('gulp-elm', function(){
       assert(file.isBuffer());
 
       var { window } = new JSDOM(file.contents);
-      assert.equal(window.document.getElementsByTagName('script')[1].innerHTML, "Elm.Test1.fullscreen()");
+      assert(window.document.getElementsByTagName('script')[0].innerHTML.indexOf("Elm.Test1.init(") > -1);
       done();
     });
   });
