@@ -4,12 +4,6 @@ var uglify = require('gulp-uglifyjs');
 var fs     = require('fs');
 var Vinyl  = require('vinyl');
 
-// elm-make --yes
-var init = elm.init;
-function initNested(){
-  return elm.init({cwd: 'elm/nested-elm/'});
-}
-
 function multi(){
   return gulp.src('elm/*.elm')
     .pipe(elm.make({filetype: 'html'}))
@@ -51,10 +45,10 @@ function string() {
 }
 
 module.exports = {
-  default: gulp.series(init, gulp.parallel(multi, pipe, string)),
-  pipe: gulp.series(init, pipe),
-  multi: gulp.series(init, multi),
-  string: gulp.series(init, string),
-  debug: gulp.series(init, debug),
-  nested: gulp.series(initNested, nested),
+  default: gulp.parallel(multi, pipe, string),
+  pipe,
+  multi,
+  string,
+  debug,
+  nested,
 };
