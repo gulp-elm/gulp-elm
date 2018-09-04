@@ -1,10 +1,8 @@
-gulp-elm
-===
+# gulp-elm
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/gulp-elm/gulp-elm.svg)](https://greenkeeper.io/)
 
-Example
----
+## Example
 
 ```.js
 var gulp = require('gulp');
@@ -23,8 +21,7 @@ gulp.task('elm-bundle', function(){
 });
 ```
 
-API
----
+## API
 
 ### `elm(options)` / `elm.make(options)`
 
@@ -32,27 +29,27 @@ compile elm files.
 
 #### options
 
-* `elm` (default: `"node_modules/.bin/elm"` if it exists, otherwise `"elm"`)
+- `elm` (default: `"node_modules/.bin/elm"` if it exists, otherwise `"elm"`)
 
-    `elm` executable file.
+  `elm` executable file.
 
-* `cwd` (default: current working directory)
+- `cwd` (default: current working directory)
 
-    The working directory in which to execute `elm` (this should be the directory with `elm.json`).
+  The working directory in which to execute `elm` (this should be the directory with `elm.json`).
 
-* `filetype` (default: `"js"`)
+- `filetype` (default: `"js"`)
 
-    elm output file type.
+  elm output file type.
 
-    `"js"` (or `"javascript"`) or `"html"`.
+  `"js"` (or `"javascript"`) or `"html"`.
 
-* `optimize` (default: `false`)
+- `optimize` (default: `false`)
 
-    add `--optimize` option to `elm`
+  add `--optimize` option to `elm`
 
-* `debug` (default: `false`)
+- `debug` (default: `false`)
 
-    add `--debug` option to `elm`
+  add `--debug` option to `elm`
 
 ### `elm.bundle(output, options)`
 
@@ -60,35 +57,33 @@ compile and bundle elm files into a single file.
 
 #### output
 
-  you must pass the name of the output file
+you must pass the name of the output file
 
 #### options
 
-* `elm` (default: `"node_modules/.bin/elm"` if it exists, otherwise `"elm"`)
+- `elm` (default: `"node_modules/.bin/elm"` if it exists, otherwise `"elm"`)
 
-    `elm` executable file.
+  `elm` executable file.
 
-* `cwd` (default: current working directory)
+- `cwd` (default: current working directory)
 
-    The working directory in which to execute `elm` (this should be the directory with `elm.json`).
+  The working directory in which to execute `elm` (this should be the directory with `elm.json`).
 
-* `optimize` (default: `false`)
+- `optimize` (default: `false`)
 
-    add `--optimize` option to `elm`
+  add `--optimize` option to `elm`
 
-* `debug` (default: `false`)
+- `debug` (default: `false`)
 
-    add `--debug` option to `elm`
+  add `--debug` option to `elm`
 
+## Changes
 
-Changes
----
-
-* 0.8.0
-  * Elm 0.19 support (drops support for ELm 0.18 and lower)
-  * Thanks to [@vodik](https://github.com/vodik) from [@sangoma](https://github.com/sangoma) for help with this upgrade!
-  * Support Gulp 4 and Node.js 10
-* 0.7.x
-  * Add `cwd` option
-* 0.6.x
-  * Add `debug` option for Elm 0.18
+- 0.8.0
+  - Elm 0.19 support (drops support for ELm 0.18 and lower)
+  - Thanks to [@vodik](https://github.com/vodik) from [@sangoma](https://github.com/sangoma) for help with this upgrade!
+  - Support Gulp 4 and Node.js 10
+- 0.7.x
+  - Add `cwd` option
+- 0.6.x
+  - Add `debug` option for Elm 0.18
