@@ -36,7 +36,7 @@ describe('gulp-elm', function(){
 
   it('should compile Elm to js from virtual file.', function(done){
     var myElm = elm({cwd: 'test/'});
-    myElm.write(new Vinyl({path: "dummy", contents: fs.readFileSync('test/test1.elm')}));
+    myElm.write(new Vinyl({path: "dummy.elm", contents: fs.readFileSync('test/test1.elm')}));
     myElm.once('data', checkTest1(done));
   });
 
