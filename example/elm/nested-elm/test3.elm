@@ -1,4 +1,4 @@
-module Test1 exposing (..)
+module Test1 exposing (main)
 
 import Html exposing (Html, text)
 import String.Interpolate exposing (interpolate)

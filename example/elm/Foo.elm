@@ -1,4 +1,4 @@
-module Foo exposing (..)
+module Foo exposing (foo)
 
 import Html exposing (text)
 

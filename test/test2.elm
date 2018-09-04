@@ -1,6 +1,6 @@
-module Test2 exposing (..)
+module Test2 exposing (main)
 
-import Html exposing (text, p)
+import Html exposing (p, text)
 import Html.Attributes exposing (id)
 
 

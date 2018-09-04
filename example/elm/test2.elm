@@ -1,4 +1,4 @@
-module Test2 exposing (..)
+module Test2 exposing (main)
 
 import Foo
 import Html exposing (Html)
