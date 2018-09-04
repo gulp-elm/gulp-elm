@@ -92,8 +92,7 @@ function tempHandler(opts) {
       temp.mkdir({prefix: 'gulp-elm-tmp-'}, function(err, dirPath){
         if(err){deferred.reject({state: state, message: 'cannot make temporary directory.'}); }
         state.tmpDir = dirPath;
-      state.tmpOut = temp.path({dir: state.dirPath, suffix: opts.ext});
-        deferred.resolve(state);
+      deferred.resolve(state);
       });
       return deferred.promise;
   }.bind(this);
@@ -103,14 +102,14 @@ function checkInputExistsHandler(opts, file) {
   return function(state){
       state.phase = 'check input';
       var deferred = Q.defer();
-      state.tmpOut = temp.path({dir: state.dirPath, suffix: opts.ext});
+      state.tmpOut = temp.path({dir: state.tmpDir, suffix: opts.ext});
       state.input  = file.path;
       state.tmpInput = false;
 
       fs.exists(state.input, function(exists){
         if(!exists) {
           state.tmpInput = true;
-          state.input = temp.path({dir: state.dirPath, suffix: file.relative});
+          state.input = temp.path({dir: state.tmpDir, suffix: file.relative});
           fs.writeFile(state.input, file.contents, function(){
             deferred.resolve(state);
           });
@@ -139,6 +138,7 @@ function bundleHandler(output, opts, files) {
   return function(state){
     state.phase = 'compile';
     state.output = path.resolve(process.cwd(), output);
+    state.tmpOut = temp.path({dir: state.tmpDir, suffix: opts.ext});
 
     var deferred = Q.defer()
     , args = opts.args.concat(files, '--output', state.tmpOut);
