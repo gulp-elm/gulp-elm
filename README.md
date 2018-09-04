@@ -10,16 +10,14 @@ Example
 var gulp = require('gulp');
 var elm  = require('gulp-elm');
 
-gulp.task('elm-init', elm.init);
-
-gulp.task('elm', ['elm-init'], function(){
-  return gulp.src('src/*.elm')
+gulp.task('elm', function(){
+  return gulp.src('src/Main.elm', { optimize: true })
     .pipe(elm())
     .pipe(gulp.dest('dist/'));
 });
 
-gulp.task('elm-bundle', ['elm-init'], function(){
-  return gulp.src('src/*.elm')
+gulp.task('elm-bundle', function(){
+  return gulp.src('src/**/Main.elm', { optimize: true })
     .pipe(elm.bundle('bundle.js'))
     .pipe(gulp.dest('dist/'));
 });
@@ -28,39 +26,19 @@ gulp.task('elm-bundle', ['elm-init'], function(){
 API
 ---
 
-### `elm.init(options)`
-
-execute `elm-make --yes`.
-
-If you compile multi file, all elm tasks depends on `elm.init` task.
-
-#### options
-
-* `elmMake` (default: `"node_modules/.bin/elm-make"` if it exists, otherwise `"elm-make"`)
-
-    `elm-make` executable file.
-
-* `cwd` (default: current working directory)
-
-    The working directory in which to execute `elm-make` (this should be the directory with `elm-package.json`).
-
 ### `elm(options)` / `elm.make(options)`
 
 compile elm files.
 
 #### options
 
-* `yesToAllPrompts` (default: `true`)
+* `elm` (default: `"node_modules/.bin/elm"` if it exists, otherwise `"elm"`)
 
-    add `--yes` option to `elm-make`.
-
-* `elmMake` (default: `"node_modules/.bin/elm-make"` if it exists, otherwise `"elm-make"`)
-
-    `elm-make` executable file.
+    `elm` executable file.
 
 * `cwd` (default: current working directory)
 
-    The working directory in which to execute `elm-make` (this should be the directory with `elm-package.json`).
+    The working directory in which to execute `elm` (this should be the directory with `elm.json`).
 
 * `filetype` (default: `"js"`)
 
@@ -68,13 +46,13 @@ compile elm files.
 
     `"js"` (or `"javascript"`) or `"html"`.
 
-* `warn` (default: `false`)
+* `optimize` (default: `false`)
 
-    add `--warn` option to `elm-make`
+    add `--optimize` option to `elm`
 
 * `debug` (default: `false`)
 
-    add `--debug` option to `elm-make` (for Elm 0.18)
+    add `--debug` option to `elm`
 
 ### `elm.bundle(output, options)`
 
@@ -86,22 +64,31 @@ compile and bundle elm files into a single file.
 
 #### options
 
-* `yesToAllPrompts` (default: `true`)
+* `elm` (default: `"node_modules/.bin/elm"` if it exists, otherwise `"elm"`)
 
-    add `--yes` option to `elm-make`.
-
-* `elmMake` (default: `"node_modules/.bin/elm-make"` if it exists, otherwise `"elm-make"`)
-
-    `elm-make` executable file.
+    `elm` executable file.
 
 * `cwd` (default: current working directory)
 
-    The working directory in which to execute `elm-make` (this should be the directory with `elm-package.json`).
+    The working directory in which to execute `elm` (this should be the directory with `elm.json`).
 
-* `warn` (default: `false`)
+* `optimize` (default: `false`)
 
-    add `--warn` option to `elm-make`
+    add `--optimize` option to `elm`
 
 * `debug` (default: `false`)
 
-    add `--debug` option to `elm-make` (for Elm 0.18)
+    add `--debug` option to `elm`
+
+
+Changes
+---
+
+* 0.8.0
+  * Elm 0.19 support (drops support for ELm 0.18 and lower)
+  * Thanks to [@vodik](https://github.com/vodik) from [@sangoma](https://github.com/sangoma) for help with this upgrade!
+  * Support Gulp 4 and Node.js 10
+* 0.7.x
+  * Add `cwd` option
+* 0.6.x
+  * Add `debug` option for Elm 0.18
