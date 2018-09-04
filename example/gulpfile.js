@@ -5,7 +5,7 @@ var fs     = require('fs');
 var Vinyl  = require('vinyl');
 
 function multi(){
-  return gulp.src('elm/*.elm')
+  return gulp.src('elm/test*.elm')
     .pipe(elm.make({filetype: 'html'}))
     .pipe(gulp.dest('dest/'));
 }
@@ -17,7 +17,7 @@ function nested(){
 }
 
 function debug(){
-  return gulp.src('elm/*.elm')
+  return gulp.src('elm/test*.elm')
     .pipe(elm.make({filetype: 'html', debug: true }))
     .pipe(gulp.dest('dest/'));
 }
