@@ -2,6 +2,9 @@
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/gulp-elm/gulp-elm.svg)](https://greenkeeper.io/)
 
+A plugin to compile Elm files with Gulp (or other [Vinyl](https://npmjs.com/package/vinyl) sources).
+The latest version (0.8.x) only supports Elm 0.19, use 0.7.x to compile earlier versions of Elm.
+
 ## Example
 
 ```.js
