@@ -22,8 +22,6 @@ install:
   - set PATH=%LOCALAPPDATA%\nvs;%PATH%
   - nvs add %NODEJS_VERSION%
   - nvs use %NODEJS_VERSION%
-  # Install Elm
-  - yarn global add elm
   # Install node modules with Yarn (ignore faulty engines check with Yarn and Node v10)
   - ps: $args = @('--no-node-version-check'); if ($env:nodejs_version -eq 'nightly/latest') { $args += '--ignore-engines' }; yarn @args
 
