@@ -199,14 +199,19 @@ function pushResultHandler() {
       result.state.tmpOut,
       function(err, contents) {
         if (!!err) {
-          deferred.reject({ state: state, message: err });
+          if (err.code !== "ENOENT") {
+            deferred.reject({ state: state, message: err });
+          } else {
+            // compiled a file with no output
+          }
+        } else {
+          this.push(
+            new Vinyl({
+              path: state.output,
+              contents: contents
+            })
+          );
         }
-        this.push(
-          new Vinyl({
-            path: state.output,
-            contents: contents
-          })
-        );
         deferred.resolve(state);
       }.bind(this)
     );
