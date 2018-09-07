@@ -82,8 +82,10 @@ you must pass the name of the output file
 
 ## Changes
 
+- 0.8.1
+  - Fix error when compiling file with no output (fixes [#37](https://github.com/gulp-elm/gulp-elm/issues/37))
 - 0.8.0
-  - Elm 0.19 support (drops support for ELm 0.18 and lower)
+  - Elm 0.19 support (drops support for Elm 0.18 and lower)
   - Thanks to [@vodik](https://github.com/vodik) from [@sangoma](https://github.com/sangoma) for help with this upgrade!
   - Support Gulp 4 and Node.js 10
 - 0.7.x
