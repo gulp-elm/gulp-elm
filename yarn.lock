@@ -31,9 +31,9 @@ ansi-colors@^1.0.1:
   dependencies:
     ansi-wrap "^0.1.0"
 
-ansi-colors@^3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/ansi-colors/-/ansi-colors-3.0.3.tgz#dd08da0bc1c632fbba31efe8655c9f5b71aab73f"
+ansi-colors@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/ansi-colors/-/ansi-colors-3.2.1.tgz#9638047e4213f3428a11944a7d4b31cba0a3ff95"
 
 ansi-gray@^0.1.1:
   version "0.1.1"
