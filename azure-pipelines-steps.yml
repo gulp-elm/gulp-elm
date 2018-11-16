@@ -1,0 +1,36 @@
+{
+  "steps":
+    [
+      {
+        "task": "NodeTool@0",
+        "inputs": { "versionSpec": "$(nodejs)" },
+        "displayName": "Install Node.js $(nodejs)",
+      },
+      {
+        "task": "geeklearningio.gl-vsts-tasks-yarn.yarn-installer-task.YarnInstaller@2",
+        "inputs": { "versionSpec": "1.x" },
+        "displayName": "Install Yarn 1.x",
+      },
+      {
+        "task": "geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2",
+        "displayName": "Yarn Install",
+      },
+      {
+        "task": "geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@2",
+        "inputs":
+          {
+            "Arguments": "test -- --no-timeouts --reporter xunit --reporter-options output=test-results.xml",
+          },
+        "displayName": "Run Tests",
+      },
+      {
+        "task": "PublishTestResults@2",
+        "inputs":
+          {
+            "testResultsFiles": "test-results.xml",
+            "testRunTitle": "$(jobName), Node.js $(nodejs)",
+          },
+        "displayName": "Publish Test Results",
+      },
+    ],
+}
