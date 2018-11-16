@@ -1,0 +1,22 @@
+{
+  "parameters": { "name": "", "vmImage": "" },
+  "jobs":
+    [
+      {
+        "job": "${{ parameters.name }}",
+        "pool": { "vmImage": "${{ parameters.vmImage }}" },
+        "strategy":
+          {
+            "matrix":
+              {
+                "boron": { "nodejs": "6.x" },
+                "carbon": { "nodejs": "8.x" },
+                "dubnium": { "nodejs": "10.x" },
+                "latest": { "nodejs": "*" },
+              },
+          },
+        "variables": { "jobName": "${{ parameters.name }}" },
+        "steps": [{ "template": "azure-pipelines-steps.yml" }],
+      },
+    ],
+}
