@@ -61,7 +61,7 @@ function processElmOptions(options, output) {
       } else if (ft == "html") {
         ext = ".html";
       } else {
-        throw new PluginError(PLUGIN, "filetype is js or html.");
+        throw new PluginError(PLUGIN, "output filetype must be js or html.");
       }
 
       if (output && path.extname(output) !== ext) {
