@@ -82,6 +82,8 @@ you must pass the name of the output file
 
 ## Changes
 
+- 0.8.2
+  - Update confusing error message (fixes [#46](https://github.com/gulp-elm/gulp-elm/pull/46), thanks [@barbeque](https://github.com/barbeque)!)
 - 0.8.1
   - Fix error when compiling file with no output (fixes [#37](https://github.com/gulp-elm/gulp-elm/issues/37))
 - 0.8.0
