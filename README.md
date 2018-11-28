@@ -12,14 +12,14 @@ var gulp = require('gulp');
 var elm  = require('gulp-elm');
 
 gulp.task('elm', function(){
-  return gulp.src('src/Main.elm', { optimize: true })
-    .pipe(elm())
+  return gulp.src('src/Main.elm')
+    .pipe(elm({ optimize: true }))
     .pipe(gulp.dest('dist/'));
 });
 
 gulp.task('elm-bundle', function(){
-  return gulp.src('src/**/Main.elm', { optimize: true })
-    .pipe(elm.bundle('bundle.js'))
+  return gulp.src('src/**/Main.elm')
+    .pipe(elm.bundle('bundle.js', { optimize: true }))
     .pipe(gulp.dest('dist/'));
 });
 ```
