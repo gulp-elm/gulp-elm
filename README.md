@@ -89,6 +89,7 @@ you must pass the name of the output file
 - 0.8.0
   - Elm 0.19 support (drops support for Elm 0.18 and lower)
   - Thanks to [@vodik](https://github.com/vodik) from [@sangoma](https://github.com/sangoma) for help with this upgrade!
+- 0.7.3
   - Support Gulp 4 and Node.js 10
 - 0.7.x
   - Add `cwd` option
