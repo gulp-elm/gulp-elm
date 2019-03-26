@@ -105,3 +105,13 @@ compile and bundle elm files into a single file.
 * `debug` (default: `false`)
 
     add `--debug` option to `elm-make` (for Elm 0.18)
+
+Changes
+---
+
+* 0.7.3
+  * Support Gulp 4 and Node.js 10
+* 0.7.x
+  * Add `cwd` option
+* 0.6.x
+  * Add `debug` option for Elm 0.18
