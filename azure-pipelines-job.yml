@@ -12,7 +12,7 @@
                 "boron": { "nodejs": "6.x" },
                 "carbon": { "nodejs": "8.x" },
                 "dubnium": { "nodejs": "10.x" },
-                "latest": { "nodejs": "*" },
+                "current": { "nodejs": "11.x" },
               },
           },
         "variables": { "jobName": "${{ parameters.name }}" },
