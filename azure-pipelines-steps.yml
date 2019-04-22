@@ -5,7 +5,7 @@
         "task": "NodeTool@0",
         "inputs": {
           "versionSpec": "$(nodejs)",
-          "checkLatest": "eq(variables.nodejs, '*')"
+          "checkLatest": true
         },
         "displayName": "Install Node.js $(nodejs)",
       },
