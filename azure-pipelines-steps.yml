@@ -3,7 +3,10 @@
     [
       {
         "task": "NodeTool@0",
-        "inputs": { "versionSpec": "$(nodejs)" },
+        "inputs": {
+          "versionSpec": "$(nodejs)",
+          "checkLatest": "eq(variables.nodejs, '*')"
+        },
         "displayName": "Install Node.js $(nodejs)",
       },
       {
