@@ -11,7 +11,8 @@
               {
                 "carbon": { "nodejs": "8.x" },
                 "dubnium": { "nodejs": "10.x" },
-                "current": { "nodejs": "12.x" },
+                "erbium": { "nodejs": "12.x" },
+                "current": { "nodejs": "13.x" },
               },
           },
         "variables": { "jobName": "${{ parameters.name }}" },
