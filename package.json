@@ -5,12 +5,18 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/philopon/gulp-elm"
+    "url": "https://github.com/gulp-elm/gulp-elm"
   },
-  "author": {
-    "name": "philopon",
-    "email": "philopon.dependence@gmail.com"
-  },
+  "contributors": [
+    {
+      "name": "philopon",
+      "email": "philopon.dependence@gmail.com"
+    },
+    {
+      "name": "Brian Dukes",
+      "email": "bdukes@engagesoftware.com"
+    }
+  ],
   "readmeFilename": "README.md",
   "main": "index.js",
   "files": [
