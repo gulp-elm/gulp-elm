@@ -42,7 +42,7 @@ describe("gulp-elm", function() {
     myElm.write(
       new Vinyl({
         path: "dummy.elm",
-        contents: fs.readFileSync("test/test1.elm")
+        contents: fs.readFileSync("test/Test1.elm")
       })
     );
     myElm.once("data", checkTest1(done));
@@ -52,7 +52,7 @@ describe("gulp-elm", function() {
     var myElm = elm({ cwd: "test/" });
     myElm.write(
       new Vinyl({
-        path: path.resolve("test/test1.elm"),
+        path: path.resolve("test/Test1.elm"),
         contents: Buffer.from("dummy")
       })
     );
@@ -63,7 +63,7 @@ describe("gulp-elm", function() {
     var myElm = elm({ cwd: "test/" });
     myElm.write(
       new Vinyl({
-        path: path.resolve("test/fail.elm"),
+        path: path.resolve("test/Fail.elm"),
         contents: Buffer.from("dummy")
       })
     );
@@ -78,7 +78,7 @@ describe("gulp-elm", function() {
     var myElm = elm({ filetype: "html", cwd: "test/" });
     myElm.write(
       new Vinyl({
-        path: path.resolve("test/test1.elm"),
+        path: path.resolve("test/Test1.elm"),
         contents: Buffer.from("dummy")
       })
     );
@@ -100,14 +100,14 @@ describe("gulp-elm", function() {
     var myElm = elm.bundle(output, { cwd: "test/" });
     myElm.write(
       new Vinyl({
-        path: path.resolve("test/test1.elm"),
-        contents: fs.readFileSync("test/test1.elm")
+        path: path.resolve("test/Test1.elm"),
+        contents: fs.readFileSync("test/Test1.elm")
       })
     );
     myElm.end(
       new Vinyl({
-        path: path.resolve("test/test2.elm"),
-        contents: fs.readFileSync("test/test2.elm")
+        path: path.resolve("test/Test2.elm"),
+        contents: fs.readFileSync("test/Test2.elm")
       })
     );
     myElm.once("data", function(file) {
