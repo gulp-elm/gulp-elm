@@ -30,7 +30,7 @@ function getDefaultExe() {
 function processElmOptions(options, output) {
   var args = defaultArgs,
     ext = ".js",
-	filename,
+    filename,
     exe = getDefaultExe(),
     spawn = {};
 
@@ -72,8 +72,8 @@ function processElmOptions(options, output) {
         );
       }
     } else if (options.filename) {
-	  filename = options.filename;
-	}
+      filename = options.filename;
+    }
   }
 
   return { args: args, ext: ext, filename: filename, exe: exe, spawn: spawn };
@@ -156,13 +156,13 @@ function compileHandler(opts, file) {
     state.phase = "compile";
     var deferred = Q.defer(),
       args = opts.args.concat(state.input, "--output", state.tmpOut);
-	const bn = path.basename(file.path, path.extname(file.path)) + opts.ext;
-	var basename;
-	if (opts.filename) {
-	  basename = opts.filename;
-	} else {
-	  basename = path.basename(file.path, path.extname(file.path)) + opts.ext;
-	}
+    const bn = path.basename(file.path, path.extname(file.path)) + opts.ext;
+    var basename;
+    if (opts.filename) {
+      basename = opts.filename;
+    } else {
+      basename = path.basename(file.path, path.extname(file.path)) + opts.ext;
+    }
     state.output = path.resolve(process.cwd(), basename);
     compile(state.exe, args, opts.spawn, function(err, warnings) {
       if (!!err) {
