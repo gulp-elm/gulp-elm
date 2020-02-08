@@ -30,6 +30,7 @@ function getDefaultExe() {
 function processElmOptions(options, output) {
   var args = defaultArgs,
     ext = ".js",
+	filename,
     exe = getDefaultExe(),
     spawn = {};
 
@@ -70,10 +71,12 @@ function processElmOptions(options, output) {
           "output is " + path.extname(output) + ", but filetype is " + ext
         );
       }
-    }
+    } else if (options.filename) {
+	  filename = options.filename;
+	}
   }
 
-  return { args: args, ext: ext, exe: exe, spawn: spawn };
+  return { args: args, ext: ext, filename: filename, exe: exe, spawn: spawn };
 }
 
 function compile(exe, args, options, callback) {
@@ -153,10 +156,14 @@ function compileHandler(opts, file) {
     state.phase = "compile";
     var deferred = Q.defer(),
       args = opts.args.concat(state.input, "--output", state.tmpOut);
-    state.output = path.resolve(
-      process.cwd(),
-      path.basename(file.path, path.extname(file.path)) + opts.ext
-    );
+	const bn = path.basename(file.path, path.extname(file.path)) + opts.ext;
+	var basename;
+	if (opts.filename) {
+	  basename = opts.filename;
+	} else {
+	  basename = path.basename(file.path, path.extname(file.path)) + opts.ext;
+	}
+    state.output = path.resolve(process.cwd(), basename);
     compile(state.exe, args, opts.spawn, function(err, warnings) {
       if (!!err) {
         deferred.reject({ state: state, message: warnings });

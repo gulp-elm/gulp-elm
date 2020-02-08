@@ -46,6 +46,10 @@ compile elm files.
 
   `"js"` (or `"javascript"`) or `"html"`.
 
+- `filename`
+
+  The filename passed into `--output` (this overrides the `filetype` option).
+
 - `optimize` (default: `false`)
 
   add `--optimize` option to `elm`
