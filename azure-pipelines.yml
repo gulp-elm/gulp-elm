@@ -3,15 +3,15 @@
     [
       {
         "template": "azure-pipelines-job.yml",
-        "parameters": { "name": "Linux", "vmImage": "ubuntu-16.04" },
+        "parameters": { "name": "Linux", "vmImage": "ubuntu-latest" },
       },
       {
         "template": "azure-pipelines-job.yml",
-        "parameters": { "name": "macOS", "vmImage": "macOS-10.13" },
+        "parameters": { "name": "macOS", "vmImage": "macOS-latest" },
       },
       {
         "template": "azure-pipelines-job.yml",
-        "parameters": { "name": "Windows", "vmImage": "vs2017-win2016" },
+        "parameters": { "name": "Windows", "vmImage": "windows-latest" },
       },
     ],
 }
