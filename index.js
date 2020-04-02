@@ -152,7 +152,7 @@ function compileHandler(opts, file) {
   return function(state) {
     state.phase = "compile";
     var deferred = Q.defer(),
-      args = opts.args.concat(state.input, "--output", state.tmpOut);
+      args = opts.args.concat(quote(state.input), "--output", state.tmpOut);
     state.output = path.resolve(
       process.cwd(),
       path.basename(file.path, path.extname(file.path)) + opts.ext
@@ -175,7 +175,7 @@ function bundleHandler(output, opts, files) {
     state.tmpOut = temp.path({ dir: state.tmpDir, suffix: opts.ext });
 
     var deferred = Q.defer(),
-      args = opts.args.concat(files, "--output", state.tmpOut);
+      args = opts.args.concat(files.map(quote), "--output", state.tmpOut);
     compile(state.exe, args, opts.spawn, function(err, warnings) {
       if (!!err) {
         deferred.reject({ state: state, message: warnings });
@@ -185,6 +185,10 @@ function bundleHandler(output, opts, files) {
     });
     return deferred.promise;
   }.bind(this);
+}
+
+function quote(str) {
+  return `"${str}"`
 }
 
 function pushResultHandler() {
