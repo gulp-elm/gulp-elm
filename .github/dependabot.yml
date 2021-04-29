@@ -4,37 +4,15 @@ updates:
   directory: "/"
   schedule:
     interval: daily
-  open-pull-requests-limit: 10
-  ignore:
-  - dependency-name: ansi-colors
-    versions:
-    - ">= 4.a, < 5"
-  - dependency-name: jsdom
-    versions:
-    - ">= 15.a, < 16"
-  - dependency-name: jsdom
-    versions:
-    - 16.4.0
-    - 16.5.0
-    - 16.5.1
-    - 16.5.2
-  - dependency-name: mocha
-    versions:
-    - 8.2.1
-    - 8.3.0
-    - 8.3.1
 - package-ecosystem: npm
   directory: "/example"
   schedule:
     interval: daily
-  open-pull-requests-limit: 10
 - package-ecosystem: elm
   directory: "/example"
   schedule:
     interval: daily
-  open-pull-requests-limit: 10
 - package-ecosystem: elm
   directory: "/test"
   schedule:
     interval: daily
-  open-pull-requests-limit: 10
